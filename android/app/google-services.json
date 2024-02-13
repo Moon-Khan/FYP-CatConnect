@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "278400562229",
+    "project_id": "catconnect-4a419",
+    "storage_bucket": "catconnect-4a419.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:278400562229:android:5d655a0eb6464d09172d7c",
+        "android_client_info": {
+          "package_name": "com.catconnectapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCEPJaSHA2RZP9-NNCuCAHRGaKC6AnQejM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
