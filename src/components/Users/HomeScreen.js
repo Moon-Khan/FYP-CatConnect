@@ -312,7 +312,7 @@ const HomeScreen = ({ navigation }) => {
           <DoctorIcon name="stethoscope" size={24} color="#9F9F9F" />
           <Text style={{ ...styles.menuText, color: '#9F9F9F' }}>Doctor</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('chatScreen')}>
+        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('ChatUsers')}>
           <ChatIcon name="chatbox-ellipses-outline" size={24} color="#9F9F9F" />
           <Text style={{ ...styles.menuText, color: '#9F9F9F' }}>Chat</Text>
         </TouchableOpacity>
