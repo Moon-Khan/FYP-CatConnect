@@ -26,6 +26,8 @@ import DoctorAppointment from './components/Doctors/DoctorAppointmentLists';
 import NotificationsScreen from './components/Users/NotificationScreen';
 import DoctorsInfo from './components/Doctors/DoctorsInfo';
 import UsersInfo from './components/Users/UserInfo';
+import UserChat from './components/Chat/UserChat';
+import ChatUsers from './components/Chat/ChatUsers';
 
 
 const Stack = createStackNavigator();
@@ -55,7 +57,8 @@ const App = () => (
         <Stack.Screen name="DoctorAppointment" component={DoctorAppointment} />
         <Stack.Screen name="NotificationsScreen" component={NotificationsScreen} />
         <Stack.Screen name="DoctorsInfo" component={DoctorsInfo} />
-        <Stack.Screen name="UsersInfo" component={UsersInfo} />
+        <Stack.Screen name="UserChat" component={UserChat} />
+        <Stack.Screen name="ChatUsers" component={ChatUsers} />
 
       </Stack.Navigator>
     </NavigationContainer>
