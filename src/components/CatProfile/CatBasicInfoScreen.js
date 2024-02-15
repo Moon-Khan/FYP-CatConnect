@@ -1,6 +1,3 @@
-// import { updateBasicInfo } from '../../Redux/Slices/CatProfile/CatProfileSlice';
-// import { saveCatProfileToFirestore } from '../../Redux/Slices/FirestoreSlice';
-
 // ./src/CatProfile/CatBasicInfoScreen.js
 import React from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView, Alert } from 'react-native';
@@ -21,23 +18,48 @@ const CatBasicInfoScreen = () => {
   const dispatch = useDispatch();
 
   const handleCatNameChange = (text) => {
-    dispatch(addDataAsync({ catName: text }));
+    // Regex pattern to allow only letters, spaces, and hyphens
+    const regex = /^[a-zA-Z\s-]*$/;
+    if (regex.test(text)) {
+      dispatch(addDataAsync({ catName: text }));
+    } else {
+      Alert.alert('Cat name can only contain letters, spaces, and hyphens.');
+    }
   };
 
   const handleBreedChange = (text) => {
-    dispatch(addDataAsync({ breed: text }));
+    // Regex pattern to allow only letters, spaces, and hyphens
+    const regex = /^[a-zA-Z\s-]*$/;
+    if (regex.test(text)) {
+      dispatch(addDataAsync({ breed: text }));
+    } else {
+      Alert.alert('Breed can only contain letters, spaces, and hyphens.');
+    }
   };
+
   const handlePedigreeChange = (text) => {
-    dispatch(addDataAsync({ pedigree: text }));
+    // Regex pattern to allow letters, spaces, hyphens, and parentheses
+    const regex = /^[a-zA-Z\s-()]*$/;
+    if (regex.test(text)) {
+      dispatch(addDataAsync({ pedigree: text }));
+    } else {
+      Alert.alert('Pedigree can only contain letters, spaces, hyphens, and parentheses.');
+    }
   };
 
   const handleGenderChange = (text) => {
     dispatch(addDataAsync({ gender: text }));
   };
-
   const handleAgeChange = (text) => {
-    dispatch(addDataAsync({ age: text }));
+    // Regex pattern to allow only positive integers
+    const regex = /^\d+$/;
+    if (regex.test(text)) {
+      dispatch(addDataAsync({ age: text }));
+    } else {
+      Alert.alert('Age can only be numbers. ');
+    }
   };
+
   const handleSkipPage = () => {
     navigation.navigate('Home');
   }
