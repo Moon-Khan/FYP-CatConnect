@@ -37,22 +37,42 @@ const PhysicalAndHealthScreen = () => {
     //redux code
     const dispatch = useDispatch();
 
-
     const handleColorChange = (text) => {
-        dispatch(addPhysicalHealth({ color: text }));
+        const regex = /^[a-zA-Z\s-]*$/; // Regex pattern to allow only letters, spaces, and hyphens
+        if (regex.test(text)) {
+            dispatch(addPhysicalHealth({ color: text }));
+        } else {
+            Alert.alert('Invalid input for color. Please use only letters, spaces, and hyphens.');
+        }
     };
 
     const handlePatternChange = (text) => {
-        dispatch(addPhysicalHealth({ pattern: text }));
+        const regex = /^[a-zA-Z\s-]*$/; // Regex pattern to allow only letters, spaces, and hyphens
+        if (regex.test(text)) {
+            dispatch(addPhysicalHealth({ pattern: text }));
+        } else {
+            Alert.alert('Invalid input for pattern. Please use only letters, spaces, and hyphens.');
+        }
     };
 
     const handleEyeColorChange = (text) => {
-        dispatch(addPhysicalHealth({ eyeColor: text }));
+        const regex = /^[a-zA-Z\s-]*$/; // Regex pattern to allow only letters, spaces, and hyphens
+        if (regex.test(text)) {
+            dispatch(addPhysicalHealth({ eyeColor: text }));
+        } else {
+            Alert.alert('Invalid input for eye color. Please use only letters, spaces, and hyphens.');
+        }
     };
 
     const handleCoatLengthChange = (text) => {
-        dispatch(addPhysicalHealth({ coatLength: text }));
+        const regex = /^[a-zA-Z\s-]*$/; // Regex pattern to allow only letters, spaces, and hyphens
+        if (regex.test(text)) {
+            dispatch(addPhysicalHealth({ coatLength: text }));
+        } else {
+            Alert.alert('Invalid input for coat length. Please use only letters, spaces, and hyphens.');
+        }
     };
+
     const handleVaccinationStatusChange = (text) => {
         console.log('Selected value:', text);
         dispatch(addPhysicalHealth({ vaccinationStatus: text }));
@@ -68,13 +88,6 @@ const PhysicalAndHealthScreen = () => {
                 return;
             }
 
-            // Validate that catName and breed are strings and age is an integer
-            if (typeof color !== 'string' || typeof pattern !== 'string' || typeof eyeColor !== 'string' || typeof coatLength !== 'string') {
-                // console.error('Invalid data types. Ensure catName and breed are strings, and age is a valid integer.');
-                Alert.alert('Invalid data types.Ensure catName and breed are strings, and age is an integer.');
-
-                return;
-            }
             dispatch(addPhysicalHealth({
                 color,
                 pattern,

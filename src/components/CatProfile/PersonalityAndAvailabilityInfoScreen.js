@@ -30,13 +30,24 @@ const PersonalityAvialabilityScreen = () => {
 
     //redux code
     const dispatch = useDispatch();
-
     const handleTemparamentChange = (text) => {
-        dispatch(addPersonalityAndAvailability({ temperament: text }));
+        // Regex pattern to allow only letters and hyphens
+        const regex = /^[a-zA-Z-]+$/;
+        if (regex.test(text)) {
+            dispatch(addPersonalityAndAvailability({ temperament: text }));
+        } else {
+            Alert.alert('Invalid input for temperament. Please use only letters and hyphens.');
+        }
     };
 
     const handleSocialCompatibilityChange = (text) => {
-        dispatch(addPersonalityAndAvailability({ socialCompatibility: text }));
+        // Regex pattern to allow only letters, spaces, and hyphens
+        const regex = /^[a-zA-Z\s-]+$/;
+        if (regex.test(text)) {
+            dispatch(addPersonalityAndAvailability({ socialCompatibility: text }));
+        } else {
+            Alert.alert('Invalid input for social compatibility. Please use only letters, spaces, and hyphens.');
+        }
     };
 
     const handleDescriptionChange = (text) => {
@@ -44,9 +55,12 @@ const PersonalityAvialabilityScreen = () => {
     };
 
     const handleAvailabilityStatusChange = (text) => {
-        dispatch(addPersonalityAndAvailability({ availabilityStatus: text }));
+        if (text === 'Available' || text === 'NotAvailable') {
+            dispatch(addPersonalityAndAvailability({ availabilityStatus: text }));
+        } else {
+            Alert.alert('Invalid availability status.');
+        }
     };
-
 
     const handleNextPage = () => {
         try {

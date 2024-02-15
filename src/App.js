@@ -6,6 +6,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import store from './Redux/Stores/store';
 import SignupScreen from './components/UserAuth/SignupScreen';
+import EmailVerification from './components/Users/UserEmailVerification'
 import LoginScreen from './components/UserAuth/LoginScreen';
 import DoctorSignupScreen from './components/DoctorAuth/DoctorSignupScreen';
 import DoctorLoginScreen from './components/DoctorAuth/DoctorLoginScreen';
@@ -39,6 +40,7 @@ const App = () => (
 
         <Stack.Screen name="Splashscreen" component={Splashscreen} />
         <Stack.Screen name="Signup" component={SignupScreen} />
+        <Stack.Screen name="EmailVerification" component={EmailVerification} />
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="DoctorSignupScreen" component={DoctorSignupScreen} />
         <Stack.Screen name="DoctorLoginScreen" component={DoctorLoginScreen} />

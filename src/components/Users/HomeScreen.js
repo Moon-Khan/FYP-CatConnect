@@ -258,7 +258,7 @@ const HomeScreen = ({ navigation }) => {
       <View style={styles.content}>
       </View>
       <View style={styles.header1}>
-        <Text style={styles.greeting}>Hello {userData.username || ''} 👋</Text>
+        <Text style={styles.greeting}>Hello {userData.firstname || ''} 👋</Text>
         {/* <Image
           style={styles.handicon}
           resizeMode="cover"

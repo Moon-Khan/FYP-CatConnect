@@ -4,7 +4,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'reac
 import { useDispatch } from 'react-redux';
 import auth from '@react-native-firebase/auth';
 import { useNavigation } from '@react-navigation/native';
-import {fetchUserDataFromFirestore} from '../../Services/firebase';
+import { fetchUserDataFromFirestore } from '../../Services/firebase';
 
 const LoginScreen = () => {
   const navigation = useNavigation();
@@ -12,11 +12,20 @@ const LoginScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState();
 
+
+  const emailRegex = /^[a-zA-Z][a-zA-Z0-9._%+-]*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
   const handleLogin = async () => {
     try {
 
       if (!email || !password) {
         Alert.alert('Please Fill all Fields');
+        return;
+      }
+
+      // Validating email, name, and password using regex
+      if (!emailRegex.test(email)) {
+        Alert.alert('Invalid Email', 'Please enter a valid email address');
         return;
       }
 
@@ -31,11 +40,11 @@ const LoginScreen = () => {
       } else {
         console.log('user data not found');
       }
-     
+
       console.log('Login successful!');
     } catch (error) {
- 
-      Alert.alert('Error', 'Invalid email or password. Please try again.');
+
+      Alert.alert('Error', 'Wrong email or password. Please try again');
     }
   };
 

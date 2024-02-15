@@ -1,4 +1,4 @@
-// src/Screens/ProfileScreen.js
+// src/Components/Users/ProfileScreen.js
 
 import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, Image, StyleSheet, Alert } from 'react-native'; // Import Alert
@@ -45,6 +45,11 @@ const ProfileScreen = ({ navigation }) => {
     }
   };
 
+  const navigateToEditProfile = () => {
+    navigation.navigate('UsersInfo');
+  };
+
+
   const navigateToCatBasicInfo = () => {
     navigation.navigate('CatBasicInfo');
   };
@@ -59,37 +64,52 @@ const ProfileScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
+      {/* <View style={styles.header}>
         <Text style={styles.title}>Profile</Text>
-        <Image source={require('../../../assets/Catassets/profile.png')} style={styles.profileIcon} />
+      </View> */}
+      <View style={styles.header}>
+        <Text style={styles.headerText}>Profile</Text>
       </View>
 
+
       {userData && (
-        <View>
-          <Text style={styles.userInfo}>Email: {userData.email}</Text>
-          <Text style={styles.userInfo}>User Name: {userData.username || ''}</Text>
+        <View style={styles.userInfoContainer}>
+          <Text style={styles.userInfoname}>{userData.firstname || ''}</Text>
+          <Text style={styles.userInfo}>{userData.email}</Text>
+
+          <TouchableOpacity style={styles.updatebutton} onPress={navigateToEditProfile}>
+            <Text style={styles.updatebuttonText}>Update </Text>
+          </TouchableOpacity>
+          <Image source={require('../../../assets/Catassets/profile.png')} style={styles.profileIcon} />
+
         </View>
       )}
 
       <View style={styles.buttonsContainer}>
-        <TouchableOpacity style={styles.button} onPress={() => {/* Handle 'My Profile' action */ }}>
-          <Text style={styles.buttonText}>Edit Profile</Text>
-        </TouchableOpacity>
+
 
         <TouchableOpacity style={styles.button} onPress={navigateToCatBasicInfo}>
-          <Text style={styles.buttonText}>Add Cat Profile</Text>
+          <Text style={styles.buttonText}>Manage Cat Profiles</Text>
+          <Image source={require('../../../assets/Catassets/manageProfile.png')} style={styles.manageProfileIcon} />
+
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.button} onPress={navigateToSettings}>
           <Text style={styles.buttonText}>Settings</Text>
+          <Image source={require('../../../assets/Catassets/settings.png')} style={styles.settingsIcon} />
+
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.button} onPress={navigateToFeedback}>
           <Text style={styles.buttonText}>Feedback</Text>
+          <Image source={require('../../../assets/Catassets/feedback.png')} style={styles.feedbackIcon} />
+
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.button} onPress={handleLogout}>
           <Text style={styles.buttonText}>Logout</Text>
+          <Image source={require('../../../assets/Catassets/exit.png')} style={styles.exitIcon} />
+
         </TouchableOpacity>
       </View>
     </View>
@@ -99,43 +119,137 @@ const ProfileScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    // padding: 20,
   },
+  // header: {
+  //   flexDirection: 'row',
+  //   justifyContent: 'space-between',
+  //   alignItems: 'center',
+  // },
+
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    backgroundColor: '#ffff',
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 35,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 5,
+    },
+    shadowOpacity: 1, // Increase shadow opacity to make it darker
+    shadowRadius: 20, // Increase shadow radius for a more spread out shadow
+    elevation: 30,
+    marginBottom: 30,
   },
-  title: {
-    fontSize: 30,
+
+  headerText: {
+    fontSize: 20,
+    color: '#47C1FF',
+    textAlign: 'center',
     fontFamily: 'Poppins-SemiBold',
   },
+
+  userInfoContainer: {
+    paddingTop: 20,
+    paddingHorizontal: 80,
+    paddingVertical: 35,
+    borderColor: 'white',
+    borderRadius: 10,
+    borderWidth: 1,
+    backgroundColor: '#ffff',
+    marginBottom: 20,
+
+  },
+
   profileIcon: {
-    marginTop: 35,
-    width: 90,
-    height: 90,
+    position: 'absolute',
+    top: 25,
+    left: 20,
+    width: 40,
+    height: 40,
     resizeMode: 'contain',
   },
+
+  manageProfileIcon: {
+    position: 'absolute',
+    top: 12,
+    left: 25,
+    width: 25,
+    height: 25,
+    resizeMode: 'contain',
+  },
+
+  settingsIcon: {
+    position: 'absolute',
+    top: 12,
+    left: 25,
+    width: 25,
+    height: 25,
+    resizeMode: 'contain',
+  },
+
+  feedbackIcon: {
+    position: 'absolute',
+    top: 12,
+    left: 25,
+    width: 25,
+    height: 25,
+    resizeMode: 'contain',
+  },
+
+  exitIcon: {
+    position: 'absolute',
+    top: 12,
+    left: 25,
+    width: 25,
+    height: 25,
+    resizeMode: 'contain',
+  },
+
   userInfo: {
     fontSize: 14,
     color: '#7E7E7E',
-    marginBottom: 10,
     fontFamily: 'Poppins-SemiBold',
+  },
+  userInfoname: {
+    fontSize: 18,
+    color: '#212529',
+    fontFamily: 'Poppins-SemiBold',
+
   },
   buttonsContainer: {
     marginTop: 20,
+
   },
   button: {
-    borderBottomColor: '#D9D9D9',
-    borderBottomWidth: 1,
-    paddingTop: 10,
-    paddingBottom: 10,
+    paddingHorizontal: 70,
+    paddingVertical: 10,
+    borderColor: 'white',
+    borderRadius: 10,
+    backgroundColor: '#ffff',
+    marginBottom: 10,
   },
   buttonText: {
-    fontSize: 24,
+    fontSize: 20,
     color: '#7E7E7E',
     fontFamily: 'Poppins-SemiBold',
   },
+  updatebutton: {
+    paddingRight: 10,
+    position: 'absolute',
+    right: 10,
+    top: 30,
+
+  },
+  updatebuttonText: {
+    fontSize: 20,
+    color: '#47C1FF',
+    fontFamily: 'Poppins-SemiBold',
+
+  },
+
 });
 
 export default ProfileScreen;
