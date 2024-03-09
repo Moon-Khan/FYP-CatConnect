@@ -23,12 +23,20 @@ import PersonalityAndAvailabilityInfo from './components/CatProfile/PersonalityA
 import CatMediaUploadScreen from './components/CatProfile/MediaUploadScreen';
 import Splashscreen from './Screens/Splash';
 import ProfileScreen from './components/Users/ProfileScreen';
-import DoctorAppointment from './components/Doctors/DoctorAppointmentLists';  
+import DoctorAppointment from './components/Doctors/DoctorAppointmentLists';
 import NotificationsScreen from './components/Users/NotificationScreen';
-import DoctorsInfo from './components/Doctors/DoctorsInfo';
+import DoctorBasicInfo1 from './components/Doctors/DoctorBasicInfo1';
+import DoctorsAvbInfo from './components/Doctors/DoctorsAvbInfo';
 import UsersInfo from './components/Users/UserInfo';
 import UserChat from './components/Chat/UserChat';
 import ChatUsers from './components/Chat/ChatUsers';
+import ManageCatProfiles from './components/Users/ManageCatProfile';
+import CatEditProfiles from './components/Users/EditCatProfile';
+import AdminHome from './components/Admin/AdminHome';
+import MonitorUsers from './components/Admin/MonitorUsers';
+import UserDetailScreen from './components/Admin/UserDetailScreen'
+import UserCatDetails from './components/Admin/UserCatDetail';
+import ApproveProfile from './components/Admin/ApproveProfile';
 
 
 const Stack = createStackNavigator();
@@ -58,9 +66,21 @@ const App = () => (
         <Stack.Screen name="CatMediaUpload" component={CatMediaUploadScreen} />
         <Stack.Screen name="DoctorAppointment" component={DoctorAppointment} />
         <Stack.Screen name="NotificationsScreen" component={NotificationsScreen} />
-        <Stack.Screen name="DoctorsInfo" component={DoctorsInfo} />
+        <Stack.Screen name="DoctorBasicInfo1" component={DoctorBasicInfo1} />
+        <Stack.Screen name="DoctorsAvbInfo" component={DoctorsAvbInfo} />
+        <Stack.Screen name="UsersInfo" component={UsersInfo} />
         <Stack.Screen name="UserChat" component={UserChat} />
         <Stack.Screen name="ChatUsers" component={ChatUsers} />
+        <Stack.Screen name="ManageCatProfiles" component={ManageCatProfiles} />
+        <Stack.Screen name="CatEditProfiles" component={CatEditProfiles} />
+        <Stack.Screen name="AdminHome" component={AdminHome} />
+        <Stack.Screen name="MonitorUsers" component={MonitorUsers} />
+        <Stack.Screen name="UserDetailScreen" component={UserDetailScreen} />
+        <Stack.Screen name="UserCatDetails" component={UserCatDetails} />
+        <Stack.Screen name="ApproveProfile" component={ApproveProfile} />
+
+
+
 
       </Stack.Navigator>
     </NavigationContainer>

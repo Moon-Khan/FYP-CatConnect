@@ -1,4 +1,4 @@
-// /src/Components/UserAuth/SignupScreen.js
+// /src/Components/DoctorAuth/DoctorSignupScreen.js
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Image } from 'react-native';
 import { useDispatch } from 'react-redux';
@@ -50,7 +50,9 @@ const DoctorSignup = () => {
 
             dispatch(setLoading(true));
             const userCredential = await auth().createUserWithEmailAndPassword(email, password);
-            const uid = userCredential.user.uid;
+            await userCredential.user.sendEmailVerification();
+
+            const uid = auth().currentUser.uid; // Get the user ID after creation
 
             // Wait for email verification before adding data to Firestore
             await auth().currentUser.reload(); // Reload user to check verification status
@@ -60,11 +62,11 @@ const DoctorSignup = () => {
             }
 
 
-            await addDoctorToFirestore(uid, email, firstname, password, '', '', '', '', '', '', '');
+            await addDoctorToFirestore(uid, email, firstname, password, '', '', '', '', '');
 
             dispatch(setUser(uid));
             dispatch(setLoading(false));
-            navigation.navigate('DoctorsInfo');
+            navigation.navigate('DoctorBasicInfo1');
             console.log('Account created successfully!');
         } catch (error) {
             dispatch(setError(error.message));
@@ -87,7 +89,7 @@ const DoctorSignup = () => {
 
             // Retrieve user data and add to Firestore
             const uid = userCredential.user.uid;
-            await addDoctorToFirestore(uid, userCredential.user.email, userCredential.user.displayName, '', '', '', '', '', '', '','');
+            await addDoctorToFirestore(uid, userCredential.user.email, userCredential.user.displayName, '', '', '', '', '', '', '', '');
             // Check if it's an existing user or a new one
             const isExistingUser = await fetchDoctorDataFromFirestore(uid);
             if (isExistingUser) {

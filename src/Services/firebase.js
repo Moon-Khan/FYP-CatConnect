@@ -376,6 +376,37 @@ const fetchAllDoctorDataFromFirestore = async () => {
   }
 };
 
+const fetchAllUserDataFromFirestore = async () => {
+  try {
+    const userDocs = await firestore().collection('users').get();
+    const userData = userDocs.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+    return userData;
+  } catch (error) {
+    console.error('Error fetching user data:', error);
+    return [];
+  }
+};
+
+
+
+const fetchBookedAppointmentsFromFirestore = async (selectedDay, doctorId) => {
+  try {
+    const appointmentsSnapshot = await firestore().collection('appointments')
+      .where('doctorId', '==', doctorId)
+      .where('day', '==', selectedDay)
+      .get();
+
+    const bookedAppointments = appointmentsSnapshot.docs.map(doc => doc.data());
+    return bookedAppointments;
+  } catch (error) {
+    console.error('Error fetching booked appointments:', error);
+    throw error;
+  }
+};
+
 const fetchAppointmentsCondFromFirestore = async (doctorId) => {
   try {
     const appointmentDocs = await firestore().collection('appointments').where('doctorId', '==', doctorId).where('status', '==', 'pending').get();
@@ -402,6 +433,36 @@ const fetchAppointmentsFromFirestore = async (appointmentId) => {
   }
 };
 
+// const fetchApproveCatProfilesForHomeScreen = async () => {
+//   try {
+//     const usersSnapshot = await firestore().collection('users').get();
+//     const promises = [];
+
+//     usersSnapshot.forEach((userDoc) => {
+//       const catProfilesSnapshot = userDoc.ref.collection('CatProfiles').where('status', '==', 'approved').get();
+//       promises.push(catProfilesSnapshot);
+//     });
+
+//     const catProfilesSnapshots = await Promise.all(promises);
+
+//     const allCatProfilesData = catProfilesSnapshots
+//       .map((catProfileSnapshot) => {
+//         return catProfileSnapshot.docs.map((catProfileDoc) => catProfileDoc.data());
+//       })
+//       .flat();
+
+//     console.log('Approved catProfilesData from firebase:', allCatProfilesData);
+
+//     return allCatProfilesData;
+//   } catch (error) {
+//     console.error('Error fetching approved cat profiles:', error);
+//     throw error;
+//   }
+// };
+
+
+
+
 const fetchCatProfilesFromFirestore = async () => {
   try {
     const usersSnapshot = await firestore().collection('users').get();
@@ -419,6 +480,8 @@ const fetchCatProfilesFromFirestore = async () => {
         return catProfileSnapshot.docs.map((catProfileDoc) => catProfileDoc.data());
       })
       .flat();
+
+    console.log('allCatProfilesData from firebase:', allCatProfilesData);
 
     return allCatProfilesData;
   } catch (error) {
@@ -440,6 +503,161 @@ const fetchUserNofiticationFromFirestore = async (userId) => {
   }
 }
 
+const fetchCatProfilesForUser = async (userId) => {
+  try {
+    const catProfilesSnapshot = await firestore()
+      .collection('users')
+      .doc(userId)
+      .collection('CatProfiles')
+      .get();
+
+    if (catProfilesSnapshot) {
+      return catProfilesSnapshot;
+    }
+    else {
+      console.log('error for fetching user cat profies');
+    }
+    // const catProfilesData = catProfilesSnapshot.docs.map(doc => doc.data());
+    // return catProfilesData;
+  } catch (error) {
+    console.error('Error fetching cat profiles for user:', error);
+    throw error;
+  }
+};
+const fetchApproveCatProfile = async () => {
+  try {
+    const approveCatProfileDocs = await firestore().collection('approveCatProfiles').get();
+
+    if (approveCatProfileDocs) {
+      // Filter documents based on the status not equal to "pending"
+      const filteredDocs = approveCatProfileDocs.docs.filter(doc => doc.data().status !== "pending");
+
+      console.log('Filtered firebase cats:', filteredDocs);
+
+      return filteredDocs;
+    } else {
+      console.log('Approve cat profile does not exist in Firestore(firebase.js).');
+      return []; // Return an empty array if no documents found
+    }
+  } catch (error) {
+    console.error('Error fetching approve cat profile data:', error);
+    throw error;
+  }
+}
+
+const fetchforAdminApproveCatProfile = async () => {
+  try {
+    const approveCatProfileDocs = await firestore().collection('approveCatProfiles').get();
+
+    if (approveCatProfileDocs) {
+      // Filter documents based on the status not equal to "pending"
+      const filteredDocs = approveCatProfileDocs.docs.filter(doc => doc.data().status == "pending");
+
+      console.log('Filtered firebase cats:', filteredDocs);
+
+      return filteredDocs;
+    } else {
+      console.log('Approve cat profile does not exist in Firestore(firebase.js).');
+      return []; // Return an empty array if no documents found
+    }
+  } catch (error) {
+    console.error('Error fetching approve cat profile data:', error);
+    throw error;
+  }
+}
+
+const fetchforAdminApproveDoctorProfile = async () => {
+  try {
+    const approveDoctorProfileDocs = await firestore().collection('approveDoctorProfile').get();
+
+    if (approveDoctorProfileDocs) {
+      // Filter documents based on the status not equal to "pending"
+      const filteredDocs = approveDoctorProfileDocs.docs.filter(doc => doc.data().status == "pending");
+
+      console.log('Filtered firebase doctor:', filteredDocs);
+
+      return filteredDocs;
+    } else {
+      console.log('Approve cat profile does not exist in Firestore(firebase.js).');
+      return []; // Return an empty array if no documents found
+    }
+  } catch (error) {
+    console.error('Error fetching approve cat profile data:', error);
+    throw error;
+  }
+};
+
+const updateApproveDoctorProfile = async (doctorProfileId, status) => {
+  // Update doctor profile status in Firebase
+  try {
+    console.log('doctorid firebase', doctorProfileId)
+    // Retrieve the specific document with the provided ID
+    const doctorProfileRef = firestore().collection('approveDoctorProfile').doc(doctorProfileId);
+    const doctorProfileDoc = await doctorProfileRef.get();
+
+    // Check if the document exists
+    if (!doctorProfileDoc.exists) {
+      throw new Error(' dcotror Document does not exist');
+    }
+
+    // Update the status field of the document
+    await doctorProfileRef.update({
+      status: status
+    });
+
+    console.log('doctor profile status updated successfully');
+  } catch (error) {
+    console.error('Error updating docotr profile status (firebase):', error);
+    throw error;
+  }
+};
+
+const approveDoctorProfile = async (data) => {
+  try {
+    await firestore().collection('approveDoctorProfile').add(data);
+    console.log('Doctor profile request sent successfully!');
+  } catch (error) {
+    console.error('Error requesting doctor profile:', error);
+    throw error;
+  }
+};
+
+const approveCatProfile = async (data) => {
+  try {
+    await firestore().collection('approveCatProfiles').add(data);
+    console.log('Cat profile request sent successfully!');
+  } catch (error) {
+    console.error('Error requesting cat profile:', error);
+    throw error;
+  }
+};
+
+const updateApproveCatProfile = async (catProfileId, status) => {
+  try {
+    console.log('catid', catProfileId)
+    // Retrieve the specific document with the provided ID
+    const catProfileRef = firestore().collection('approveCatProfiles').doc(catProfileId);
+    const catProfileDoc = await catProfileRef.get();
+
+    // Check if the document exists
+    if (!catProfileDoc.exists) {
+      throw new Error('Document does not exist');
+    }
+
+    // Update the status field of the document
+    await catProfileRef.update({
+      status: status
+    });
+
+    console.log('Cat profile status updated successfully');
+  } catch (error) {
+    console.error('Error updating cat profile status (firebase):', error);
+    throw error;
+  }
+};
+
+
+
 const addAppointmentsDataToFirestore = async (data) => {
   try {
     await firestore().collection('appointments').add(data);
@@ -450,10 +668,10 @@ const addAppointmentsDataToFirestore = async (data) => {
   }
 };
 
-const addDataToFirestore = async (data) => {
+const addCatProfileToFirestore = async (userId, data) => {
   try {
-    const user = auth().currentUser;
-    await firestore().collection('users').doc(user.uid).collection('CatProfiles').add(data);
+    // const user = auth().currentUser;
+    await firestore().collection('users').doc(userId).collection('CatProfiles').add(data);
     console.log('Data added to Firestore:', data);
   } catch (error) {
     console.error('Error adding data to Firestore:', error);
@@ -474,7 +692,7 @@ const addUserDataToFirestore = async (userId, emailId, firstname, password, fcmt
       city: city,
       gender: gender,
     };
-    
+
     await userDocRef.set(userData);
     console.log('User Data added to Firestore:', userData);
   } catch (error) {
@@ -483,7 +701,7 @@ const addUserDataToFirestore = async (userId, emailId, firstname, password, fcmt
   }
 };
 
-const addDoctorToFirestore = async (doctorId, email, username, password, specialization, selectedDay, selectedStartTime, selectedEndTime, contactInfo, city, address) => {
+const addDoctorToFirestore = async (doctorId, email, username, password, specialization, qualification, availability, contactNumber, city) => {
   try {
     const doctorDocRef = firestore().collection('doctors').doc(doctorId);
     const doctorData = {
@@ -491,14 +709,10 @@ const addDoctorToFirestore = async (doctorId, email, username, password, special
       username: username,
       password: password,
       specialization: specialization,
-      selectedDay: selectedDay,
-      availability: {
-        day: selectedDay,
-        timeRange: `${selectedStartTime} - ${selectedEndTime}`,
-      },
-      contactInfo: contactInfo,
+      qualification: qualification,
+      availability: availability,
+      contactNumber: contactNumber,
       city: city,
-      address: address,
     };
     await doctorDocRef.set(doctorData);
     console.log('Doctor Data added to Firestore:', doctorData);
@@ -521,6 +735,7 @@ const addNotificationToFirestore = async (userId_, message_, status_) => {
   }
 };
 
+
 const updateUserDataInFirestore = async (userId, emailId, firstname, password, fcmtoken, lastname, contact, city, gender) => {
   try {
     const userDocRef = firestore().collection('users').doc(userId);
@@ -536,6 +751,15 @@ const updateUserDataInFirestore = async (userId, emailId, firstname, password, f
     console.log('User Data updated in Firestore:', userData);
   } catch (error) {
     console.error('Error updating user data:', error);
+    throw error;
+  }
+};
+
+const updateDoctorDataInFirestore = async (doctorId, doctorData) => {
+  try {
+    const doctorDocRef = firestore().collection('doctors').doc(doctorId);
+    await doctorDocRef.update(doctorData);
+  } catch (error) {
     throw error;
   }
 };
@@ -574,22 +798,89 @@ const updateAppointmentsFromFirestore = async (appointmentId, status_) => {
     throw error;
   }
 };
+const updateCatProfile = async (userid, catId, updatedCatProfile) => {
+  try {
+    console.log('firebase catid:', userid);
+    console.log('firebase catid:', catId);
+    console.log('firebase catdata:', updatedCatProfile);
+    const alreadypresentdata = await firestore().collection('users').doc(userid).collection('CatProfiles').doc(catId).get();
+    console.log('firebase already present:', alreadypresentdata);
+    if (alreadypresentdata.exists) {
+      console.log('data already present');
+      await firestore().collection('users').doc(userid).collection('CatProfiles').doc(catId).update(updatedCatProfile);
+
+      console.log('Cat profile updated successfully!');
+    }
+    else {
+      console.log('data not present');
+    }
+  } catch (error) {
+    console.error('Error updating cat profile firebase:', error);
+    throw error; // Throw the error for handling it in the calling code
+  }
+};
+
+
+
+const deleteCatProfile = async (catProfileId, userid) => {
+  try {
+    await firestore()
+      .collection('users')
+      .doc(userid)
+      .collection('CatProfiles')
+      .doc(catProfileId)
+      .delete();
+    console.log('Cat profile deleted successfully');
+  } catch (error) {
+    console.error('Error deleting cat profile:', error);
+    throw error;
+  }
+};
+
+const deleteUserProfile = async (userId) => {
+  try {
+    await firestore()
+      .collection('users')
+      .doc(userId)
+      .delete();
+    console.log('User profile deleted successfully');
+  } catch (error) {
+    console.error('Error deleting user profile:', error);
+    throw error;
+  }
+};
+
 
 export {
-  addDataToFirestore,
+  addCatProfileToFirestore,
   fetchCatProfilesFromFirestore,
   fetchUserDataFromFirestore,
   fetchAllDoctorDataFromFirestore,
   fetchAppointmentsFromFirestore,
+  fetchBookedAppointmentsFromFirestore,
   fetchAppointmentsCondFromFirestore,
   fetchUserNofiticationFromFirestore,
+  fetchAllUserDataFromFirestore,
+  fetchCatProfilesForUser,
+  fetchApproveCatProfile,
+  approveDoctorProfile,
+  fetchforAdminApproveCatProfile,
+  fetchforAdminApproveDoctorProfile,
+  approveCatProfile,
   addDoctorToFirestore,
   addUserDataToFirestore,
   fetchDoctorDataFromFirestore,
   userNotifications,
   addNotificationToFirestore,
   addAppointmentsDataToFirestore,
+  updateApproveCatProfile,
+  updateApproveDoctorProfile,
+  updateDoctorDataInFirestore,
   updateUserDataInFirestore,
   updateAppointmentsFromFirestore,
-  updateNotificationFromFirestore
+  updateNotificationFromFirestore,
+  updateCatProfile,
+  deleteCatProfile,
+  deleteUserProfile
+  // deleteCatProfile
 };

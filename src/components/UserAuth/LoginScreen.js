@@ -23,31 +23,45 @@ const LoginScreen = () => {
         return;
       }
 
-      // Validating email, name, and password using regex
-      if (!emailRegex.test(email)) {
-        Alert.alert('Invalid Email', 'Please enter a valid email address');
+      if (email == 'Admin' && password == 'Admin') {
+        navigation.navigate('AdminHome');
         return;
       }
+      else {
 
-      const userCredential = await auth().signInWithEmailAndPassword(email, password);
+        try {
 
-      const userId = userCredential.user.uid;
-      const userSnapshot = await fetchUserDataFromFirestore(userId);
+          // Validating email, name, and password using regex
+          if (!emailRegex.test(email)) {
+            Alert.alert('Invalid Email', 'Please enter a valid email address');
+            return;
+          }
 
-      if (userSnapshot.exists) {
+          const userCredential = await auth().signInWithEmailAndPassword(email, password);
 
-        navigation.navigate('Home');
-      } else {
-        console.log('user data not found');
+          const userId = userCredential.user.uid;
+          const userSnapshot = await fetchUserDataFromFirestore(userId);
+
+          if (userSnapshot.exists) {
+
+            navigation.navigate('Home');
+          } else {
+            console.log('user data not found');
+          }
+
+          console.log('Login successful!');
+        } catch (error) {
+
+          Alert.alert('Error', 'Wrong email or password. Please try again');
+        }
+
       }
-
-      console.log('Login successful!');
-    } catch (error) {
-
-      Alert.alert('Error', 'Wrong email or password. Please try again');
+    }
+    catch (error) {
+      Alert.alert('Please try again!');
+      console.log('Admin error',error.message);
     }
   };
-
 
   return (
     <View style={styles.container}>

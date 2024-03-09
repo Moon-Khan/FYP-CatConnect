@@ -1,4 +1,4 @@
-
+// src/components/Doctors/DoctorAppointmentLists.js
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -7,20 +7,32 @@ import { fetchAppointmentsFromFirestore } from '../../Services/firebase';
 import { updateAppointmentsFromFirestore } from '../../Services/firebase';
 import { fetchUserDataFromFirestore } from '../../Services/firebase';
 import { fetchAppointmentsCondFromFirestore } from '../../Services/firebase';
-import {addNotificationToFirestore} from '../../Services/firebase';
+import { addNotificationToFirestore } from '../../Services/firebase';
+const AppointmentCard = ({ appointment, onAccept, onReject }) => {
+  const { userName, status, timeSlot, day } = appointment;
+  const startTime = new Date(timeSlot.startTime.toDate());
+  const endTime = new Date(timeSlot.endTime.toDate());
 
-const AppointmentCard = ({ appointment, onAccept, onReject }) => (
-  <View style={styles.appointmentCard}>
-    <Text style={styles.userName}>User: {appointment.userName}</Text>
-    <Text style={styles.status}>Status: {appointment.status}</Text>
-    <TouchableOpacity style={styles.actionButton} onPress={() => onAccept(appointment.id)}>
-      <Text style={styles.actionButtonText}>Accept ✅</Text>
-    </TouchableOpacity>
-    <TouchableOpacity style={styles.actionButton} onPress={() => onReject(appointment.id)}>
-      <Text style={styles.actionButtonText}>Reject ❌</Text>
-    </TouchableOpacity>
-  </View>
-);
+  const formattedStartTime = startTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  const formattedEndTime = endTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  console.log('appointmentid:',appointment.id)
+  return (
+    <View style={styles.appointmentCard}>
+      <Text style={styles.userName}>User: {userName}</Text>
+      <Text style={styles.status}>Status: {status}</Text>
+      <Text style={styles.status}>Day: {day}</Text>
+      <Text style={styles.status}>Time slot: {formattedStartTime} - {formattedEndTime}</Text>
+
+      <TouchableOpacity style={styles.actionButton} onPress={() => onAccept(appointment.id)}>
+        <Text style={styles.actionButtonText}>Accept ✅</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.actionButton} onPress={() => onReject(appointment.id)}>
+        <Text style={styles.actionButtonText}>Reject ❌</Text>
+      </TouchableOpacity>
+    </View>
+  );
+};
+
 
 const DoctorAppointmentsList = ({ route }) => {
   const [appointments, setAppointments] = useState([]);
@@ -33,7 +45,7 @@ const DoctorAppointmentsList = ({ route }) => {
     const fetchAppointments = async () => {
       try {
         const appointmentsSnapshot = await fetchAppointmentsCondFromFirestore(doctorId);
-       
+
         const appointmentsData = appointmentsSnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
@@ -50,23 +62,24 @@ const DoctorAppointmentsList = ({ route }) => {
 
   const handleAccept = async (appointmentId) => {
     try {
-
       await updateAppointmentsFromFirestore(appointmentId, 'Accepted')
 
-      // Fetch user's FCM token from Firestore
       const appointmentSnapshot = await fetchAppointmentsFromFirestore(appointmentId);
       const userId = appointmentSnapshot.data().userId;
-
       const userSnapshot = await fetchUserDataFromFirestore(userId);
       const userToken = userSnapshot.data().fcmToken;
 
-      await addNotificationToFirestore(userId, 'Appointment Accepted', 'unread');
+      const doctorName = doctorId.username;
+      const day = appointmentSnapshot.data().day;
+      const startTime = appointmentSnapshot.data().timeSlot.startTime.toDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const endTime = appointmentSnapshot.data().timeSlot.endTime.toDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
+      const message = `Appointment accepted with ${doctorName} on ${day} at ${startTime} - ${endTime}.`;
 
-      // Send a push notification to the user
-      await sendPushNotification(userToken, 'Appointment Accepted', 'Your appointment has been accepted.');
-      navigation.navigate('DoctorHomeScreen')
+      await addNotificationToFirestore(userId, message, 'unread');
 
+      await sendPushNotification(userToken, 'Appointment Accepted', message);
+      navigation.navigate('DoctorHomeScreen');
     } catch (error) {
       console.error('Error accepting appointment:', error);
     }
@@ -80,18 +93,22 @@ const DoctorAppointmentsList = ({ route }) => {
       const appointmentSnapshot = await fetchAppointmentsFromFirestore(appointmentId);
       const userId = appointmentSnapshot.data().userId;
 
+      const doctorName = appointmentSnapshot.data().doctorName;
+      const day = appointmentSnapshot.data().day;
+
+      const message = `Appointment rejected with ${doctorName} for this ${day}.`;
+
       const userSnapshot = await fetchUserDataFromFirestore(userId);
       const userToken = userSnapshot.data().fcmToken;
-      await addNotificationToFirestore(userId, 'Appointment Rejected', 'unread');
+      await addNotificationToFirestore(userId, message, 'unread');
 
       // Send a push notification to the user
-      await sendPushNotification(userToken, 'Appointment Rejected', 'Your appointment has been rejected.');
+      await sendPushNotification(userToken, 'Appointment Rejected', message);
       navigation.navigate('DoctorHomeScreen')
     } catch (error) {
       console.error('Error rejecting appointment:', error);
     }
   };
-
   const sendPushNotification = async (userToken, title, message) => {
     try {
       await messaging().sendMessage({

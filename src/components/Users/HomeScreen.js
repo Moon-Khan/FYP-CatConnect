@@ -17,7 +17,7 @@ import ChatIcon from 'react-native-vector-icons/Ionicons';
 import ProfileIcon from 'react-native-vector-icons/Feather';
 import SearchIcon from 'react-native-vector-icons/MaterialIcons';
 import auth from '@react-native-firebase/auth';
-import { fetchCatProfilesFromFirestore, fetchUserDataFromFirestore, userNotifications } from '../../Services/firebase';
+import { fetchApproveCatProfile, fetchUserDataFromFirestore, userNotifications } from '../../Services/firebase';
 import { updateNotificationFromFirestore } from '../../Services/firebase';
 
 const Stack = createStackNavigator();
@@ -52,20 +52,25 @@ const HomeScreen = ({ navigation }) => {
     checkAuthentication();
   }, [user, navigation]);
 
-
   useEffect(() => {
-    const fetchCatProfiles = async () => {
+    const fetchProfiles = async () => {
       try {
-        // Fetch all cat profiles from Firestore
-        const catProfilesData = await fetchCatProfilesFromFirestore();
-        setCatProfiles(catProfilesData);
+        const profiles = await fetchApproveCatProfile();
+        if (profiles && profiles.length > 0) { // Check if profiles is defined and not empty
+          const profilesData = profiles.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+          console.log('catProfiles--<:', profilesData);
+          setCatProfiles(profilesData);
+        }
       } catch (error) {
         console.error('Error fetching cat profiles:', error);
       }
     };
 
-    fetchCatProfiles();
-  }, [user]);
+    fetchProfiles();
+  }, []);
 
   useEffect(() => {
     const fetchNotifications = async () => {

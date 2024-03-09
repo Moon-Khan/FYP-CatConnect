@@ -66,16 +66,13 @@ const DoctorHome = () => {
                 </View>
                 <View style={styles.detailContainer}>
                     <Text style={styles.label}></Text>
-                    <Text style={styles.specialvalue}>Contact Info: {doctorProfile.contactInfo}</Text>
+                    <Text style={styles.specialvalue}>Contact Info: {doctorProfile.contactNumber}</Text>
                 </View>
                 <View style={styles.detailContainer}>
                     <Text style={styles.label}></Text>
                     <Text style={styles.specialvalue}>City: {doctorProfile.city}</Text>
                 </View>
-                <View style={styles.detailContainer}>
-                    <Text style={styles.label}></Text>
-                    <Text style={styles.specialvalue}>Address: {doctorProfile.address}</Text>
-                </View>
+
                 <TouchableOpacity style={styles.button} onPress={handleDoctorDetail}>
                     <Text style={styles.buttonText}>View Appointments</Text>
                 </TouchableOpacity>
