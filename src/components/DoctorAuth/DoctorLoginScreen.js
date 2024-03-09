@@ -1,4 +1,4 @@
-// DoctorLoginScreen.js
+// /src/Components/DoctorAuth/DoctorLoginScreen.js
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import auth from '@react-native-firebase/auth';
@@ -10,11 +10,27 @@ const DoctorLoginScreen = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState();
 
+
+    const emailRegex = /^[a-zA-Z][a-zA-Z0-9._%+-]*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/;
+
+
     const handleLogin = async () => {
         try {
 
             if (!email || !password) {
                 Alert.alert('Please Fill all Fields');
+                return;
+            }
+
+            // Validating email, name, and password using regex
+            if (!emailRegex.test(email)) {
+                Alert.alert('Invalid Email', 'Please enter a valid email address');
+                return;
+            }
+
+            if (!passwordRegex.test(password)) {
+                Alert.alert('Weak Password', 'Password must contain at least 8 characters including uppercase, lowercase, and digits');
                 return;
             }
 

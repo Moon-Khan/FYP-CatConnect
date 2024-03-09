@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, Image, StyleSheet, Alert } from 'react-native'; // Import Alert
 import { CommonActions } from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
-import { fetchUserDataFromFirestore } from '../../Services/firebase';
+import { fetchUserDataFromFirestore, deleteUserProfile } from '../../Services/firebase';
 
 const ProfileScreen = ({ navigation }) => {
   const user = auth().currentUser;
@@ -50,8 +50,8 @@ const ProfileScreen = ({ navigation }) => {
   };
 
 
-  const navigateToCatBasicInfo = () => {
-    navigation.navigate('CatBasicInfo');
+  const navigateToCatManageProfile = () => {
+    navigation.navigate('ManageCatProfiles');
   };
 
   const navigateToSettings = () => {
@@ -61,12 +61,35 @@ const ProfileScreen = ({ navigation }) => {
   const navigateToFeedback = () => {
     navigation.navigate('Feedback');
   };
+  const handleDeleteProfile = () => {
+    Alert.alert(
+      'Confirm Deletion',
+      'Are you sure you want to delete your profile?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Delete',
+          onPress: async () => {
+            try {
+              await deleteUserProfile(user.uid);
+              navigation.navigate('Signup')
+            } catch (error) {
+              console.error('Error deleting user profile:', error);
+            }
+          },
+        },
+      ],
+      { cancelable: true }
+    );
+  }
+
 
   return (
     <View style={styles.container}>
-      {/* <View style={styles.header}>
-        <Text style={styles.title}>Profile</Text>
-      </View> */}
+
       <View style={styles.header}>
         <Text style={styles.headerText}>Profile</Text>
       </View>
@@ -80,7 +103,8 @@ const ProfileScreen = ({ navigation }) => {
           <TouchableOpacity style={styles.updatebutton} onPress={navigateToEditProfile}>
             <Text style={styles.updatebuttonText}>Update </Text>
           </TouchableOpacity>
-          <Image source={require('../../../assets/Catassets/profile.png')} style={styles.profileIcon} />
+          <Image source={require("../../../assets/Catassets/doctoruser2.png")}
+            style={styles.profileIcon} />
 
         </View>
       )}
@@ -88,7 +112,7 @@ const ProfileScreen = ({ navigation }) => {
       <View style={styles.buttonsContainer}>
 
 
-        <TouchableOpacity style={styles.button} onPress={navigateToCatBasicInfo}>
+        <TouchableOpacity style={styles.button} onPress={navigateToCatManageProfile}>
           <Text style={styles.buttonText}>Manage Cat Profiles</Text>
           <Image source={require('../../../assets/Catassets/manageProfile.png')} style={styles.manageProfileIcon} />
 
@@ -111,6 +135,11 @@ const ProfileScreen = ({ navigation }) => {
           <Image source={require('../../../assets/Catassets/exit.png')} style={styles.exitIcon} />
 
         </TouchableOpacity>
+
+        <TouchableOpacity style={styles.delbutton} onPress={handleDeleteProfile}>
+          <Text style={styles.delbuttonText}>Delete Profile</Text>
+        </TouchableOpacity>
+
       </View>
     </View>
   );
@@ -235,6 +264,24 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: '#7E7E7E',
     fontFamily: 'Poppins-SemiBold',
+  },
+  delbutton: {
+    paddingVertical: 10,
+    backgroundColor: 'red',
+    borderRadius: 10,
+    marginTop: 40,
+    width: '90%',
+    alignContent: 'center',
+    alignSelf: 'center',
+    justifyContent: 'center',
+  },
+
+  delbuttonText: {
+    fontSize: 20,
+    color: 'white',
+    fontFamily: 'Poppins-SemiBold',
+    textAlign: 'center',
+
   },
   updatebutton: {
     paddingRight: 10,

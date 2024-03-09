@@ -121,7 +121,7 @@ const AppointmentHomeScreen = () => {
     <View style={styles.container}>
 
       <View style={styles.header1}>
-        <Text style={styles.greeting}>Hello {userData.username || ''} 👋</Text>
+        <Text style={styles.greeting}>Hello {userData.firstname || ''} 👋</Text>
         {/* <Image
           style={styles.handicon}
           resizeMode="cover"

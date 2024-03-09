@@ -32,7 +32,7 @@ const ChatUsers = () => {
         <TouchableOpacity onPress={() => handleUserPress(item)}>
             <View style={styles.userItem}>
                 <Image source={require('../../../assets/Catassets/uicon.png')} style={styles.userIcon} />
-                <Text style={styles.username}>{item.username}</Text>
+                <Text style={styles.username}>{item.firstname}</Text>
             </View>
         </TouchableOpacity>
     );

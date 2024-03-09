@@ -87,7 +87,8 @@ import ImageCropPicker from 'react-native-image-crop-picker';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { addMedia } from '../../Redux/Slices/CatProfile/MeduaUploadSlice';
-import { addDataToFirestore } from '../../Services/firebase';
+import { addCatProfileToFirestore, approveCatProfile } from '../../Services/firebase';
+import auth from '@react-native-firebase/auth';
 
 const CatMediaUploadScreen = () => {
     const [image, setImage] = useState([]);
@@ -147,10 +148,16 @@ const CatMediaUploadScreen = () => {
                 physicalHealth,
                 personalityAndAvailability,
                 mediaUpload,
+                status: 'pending',
+
             };
+            const user = auth().currentUser;
+            console.log('media userid',user.uid)
+            // Add data to Firestore
+            await addCatProfileToFirestore(user.uid, catProfileData);
 
             // Add data to Firestore
-            await addDataToFirestore(catProfileData);
+            await approveCatProfile(catProfileData);
 
             // Optionally, you can navigate to another screen or perform other actions
             navigation.navigate('Home');
@@ -218,8 +225,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 16,
-        // justifyContent: 'center',
-        // alignItems: 'center',
+  
     },
     title: {
         fontSize: 24,
