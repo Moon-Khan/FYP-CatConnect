@@ -23,43 +23,50 @@ const LoginScreen = () => {
         return;
       }
 
-      if (email == 'Admin' && password == 'Admin') {
-        navigation.navigate('AdminHome');
-        return;
-      }
-      else {
+      // if (email == 'Admin' && password == 'Admin') {
+      //   navigation.navigate('AdminHome');
+      //   return;
+      // }
+      // else {
 
-        try {
+      try {
 
-          // Validating email, name, and password using regex
-          if (!emailRegex.test(email)) {
-            Alert.alert('Invalid Email', 'Please enter a valid email address');
-            return;
-          }
-
-          const userCredential = await auth().signInWithEmailAndPassword(email, password);
-
-          const userId = userCredential.user.uid;
-          const userSnapshot = await fetchUserDataFromFirestore(userId);
-
-          if (userSnapshot.exists) {
-
-            navigation.navigate('Home');
-          } else {
-            console.log('user data not found');
-          }
-
-          console.log('Login successful!');
-        } catch (error) {
-
-          Alert.alert('Error', 'Wrong email or password. Please try again');
+        // Validating email, name, and password using regex
+        if (!emailRegex.test(email)) {
+          Alert.alert('Invalid Email', 'Please enter a valid email address');
+          return;
         }
 
+        const userCredential = await auth().signInWithEmailAndPassword(email, password);
+
+        const userId = userCredential.user.uid;
+        const userSnapshot = await fetchUserDataFromFirestore(userId);
+
+        console.log('userSnapshot login-->',userSnapshot)
+
+        if(userSnapshot._data.chkadmin == 'admin') {
+          navigation.navigate('AdminHome');
+          return;
+        }
+
+        if (userSnapshot.exists) {
+
+          navigation.navigate('Home');
+        } else {
+          console.log('user data not found');
+        }
+
+        console.log('Login successful!');
+      } catch (error) {
+
+        Alert.alert('Error', 'Wrong email or password. Please try again');
       }
+
     }
+
     catch (error) {
       Alert.alert('Please try again!');
-      console.log('Admin error',error.message);
+      console.log('Admin error', error.message);
     }
   };
 

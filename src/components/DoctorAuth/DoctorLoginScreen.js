@@ -41,7 +41,7 @@ const DoctorLoginScreen = () => {
 
             if (doctorSnapshot.exists) {
 
-                navigation.navigate('DoctorHomeScreen');
+                navigation.navigate('DoctorBasicInfo1');
             } else {
                 console.log('Doctor data not found');
             }

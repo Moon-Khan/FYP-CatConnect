@@ -37,7 +37,10 @@ import MonitorUsers from './components/Admin/MonitorUsers';
 import UserDetailScreen from './components/Admin/UserDetailScreen'
 import UserCatDetails from './components/Admin/UserCatDetail';
 import ApproveProfile from './components/Admin/ApproveProfile';
-
+import AnnouncementScreen from './components/Admin/sendAnnouncement_3';
+import CatProfileRecommendationScreen from './components/Recommendation/CatProfileRecommendationScreen';
+import AllAnnouncements from './components/Admin/allAnnouncmenet_1';
+import SelectRecepientsforAnnouncmenets from './components/Admin/RecepientsforAnnouncmenets_2';
 
 const Stack = createStackNavigator();
 
@@ -50,7 +53,7 @@ const App = () => (
         <Stack.Screen name="Signup" component={SignupScreen} />
         <Stack.Screen name="EmailVerification" component={EmailVerification} />
         <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="DoctorSignupScreen" component={DoctorSignupScreen} />
+        <Stack.Screen name="DoctorSignupScreen" component={DoctorSignupScreen} /> 
         <Stack.Screen name="DoctorLoginScreen" component={DoctorLoginScreen} />
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="DoctorHomeScreen" component={DoctorHomeScreen} />
@@ -78,7 +81,10 @@ const App = () => (
         <Stack.Screen name="UserDetailScreen" component={UserDetailScreen} />
         <Stack.Screen name="UserCatDetails" component={UserCatDetails} />
         <Stack.Screen name="ApproveProfile" component={ApproveProfile} />
-
+        <Stack.Screen name="AnnouncementScreen" component={AnnouncementScreen} />
+        <Stack.Screen name="CatProfileRecommendationScreen" component={CatProfileRecommendationScreen} />
+        <Stack.Screen name="AllAnnouncements" component={AllAnnouncements} />
+        <Stack.Screen name="SelectRecepientsforAnnouncmenets" component={SelectRecepientsforAnnouncmenets} />
 
 
 

@@ -104,8 +104,6 @@
 //         </View>
 //     );
 // };
-
-
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -115,6 +113,7 @@ const ApproveProfile = () => {
     const navigation = useNavigation();
     const [catProfiles, setCatProfiles] = useState([]);
     const [doctorProfiles, setDoctorProfiles] = useState([]);
+    const [showCatProfiles, setShowCatProfiles] = useState(true);
 
     useEffect(() => {
         const fetchProfiles = async () => {
@@ -132,44 +131,70 @@ const ApproveProfile = () => {
     }, []);
 
     const CatProfileCard = ({ catProfile, onDetails, onApprove, onReject }) => {
+        console.log('catprofile-->', catProfile._data.basicInfo.breed)
+        console.log('catprofile id-->', catProfile.id)
+
         return (
             <TouchableOpacity style={styles.card} onPress={() => onDetails(catProfile.id)}>
                 <View style={styles.imageContainer}>
-                    {catProfile.mediaUpload?.mediaList?.[0] ? (
+                    {catProfile._data.mediaUpload?.mediaList?.[0] ? (
                         <Image
                             style={styles.thumbnailImage}
-                            source={{ uri: catProfile.mediaUpload.mediaList[0] }}
+                            source={{ uri: catProfile._data.mediaUpload.mediaList[0] }}
                         />
                     ) : (
                         <Text>No cat profile picture available</Text>
                     )}
                 </View>
-                <Text style={styles.breedName}>{catProfile.basicInfo.breed}</Text>
-                <TouchableOpacity onPress={() => onApprove(catProfile.id)}>
-                    <Text style={styles.button}>Approve</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => onReject(catProfile.id)}>
-                    <Text style={styles.button}>Reject</Text>
-                </TouchableOpacity>
+                <View style={styles.infoContainer}>
+                    <View style={styles.catDetailsContainer}>
+                        <Text style={styles.breedName}>{catProfile._data.basicInfo.breed}</Text>
+                        <Text style={styles.catGender}>{catProfile._data.basicInfo.gender}</Text>
+                    </View>
+                    <Text style={styles.catName}>{catProfile._data.basicInfo.catName}</Text>
+                </View>
+                <View style={styles.buttonContainer}>
+                    <TouchableOpacity onPress={() => onReject(catProfile.id)}>
+                        <Text style={styles.rejectbutton}>Reject</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => onApprove(catProfile.id)}>
+                        <Text style={styles.approvebutton}>Approve</Text>
+                    </TouchableOpacity>
+
+                </View>
             </TouchableOpacity>
         );
     };
 
     const DoctorProfileCard = ({ doctorProfile, onDetails, onApprove, onReject }) => {
+        console.log('doctorProfile data: ', doctorProfile);
+        console.log('doctorProfile name: ', doctorProfile._data.name);
+
         return (
             <TouchableOpacity style={styles.card} onPress={() => onDetails(doctorProfile.id)}>
-                <View style={styles.infoContainer}>
-                    <Text style={styles.doctorName}>{doctorProfile.username}</Text>
-                    <Text style={styles.doctorSpecialty}>{doctorProfile.specialization}</Text>
-                    <Text style={styles.doctorAvailable}>{doctorProfile.availability.day}</Text>
-                    <Text style={styles.doctorTime}>{doctorProfile.availability.timeRange}</Text>
+                <View style={styles.userIconContainer}>
+                    <Image
+                        style={styles.thumbnailImage}
+                        resizeMode="cover"
+                        source={require("../../../assets/Catassets/uicon.png")}
+                    />
                 </View>
-                <TouchableOpacity onPress={() => onApprove(doctorProfile.id)}>
-                    <Text style={styles.button}>Approve</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => onReject(doctorProfile.id)}>
-                    <Text style={styles.button}>Reject</Text>
-                </TouchableOpacity>
+                <View style={styles.infoContainer}>
+                    <View style={styles.catDetailsContainer}>
+                        <Text style={styles.doctorSpecialty}>{doctorProfile._data.specialization}</Text>
+                        <Text style={styles.doctorName}>{doctorProfile._data.name}</Text>
+                    </View>
+                    <Text style={styles.catName}>{doctorProfile._data.qualification}</Text>
+                </View>
+                <View style={styles.buttonContainer}>
+                    <TouchableOpacity onPress={() => onReject(doctorProfile.id)}>
+                        <Text style={styles.rejectbutton}>Reject</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => onApprove(doctorProfile.id)}>
+                        <Text style={styles.approvebutton}>Approve</Text>
+                    </TouchableOpacity>
+
+                </View>
             </TouchableOpacity>
         );
     };
@@ -216,32 +241,49 @@ const ApproveProfile = () => {
 
     return (
         <View style={styles.container}>
+
             <View style={styles.header}>
-                <Text style={styles.headerText}>Profiles</Text>
+                <Text style={styles.headerText}>Approve Profiles</Text>
             </View>
 
-            <View style={styles.cardContainer}>
-                {catProfiles.map((catProfile) => (
-                    <CatProfileCard
-                        key={catProfile.id}
-                        catProfile={catProfile}
-                        onDetails={handleDetails}
-                        onApprove={handleApproveCatProfile}
-                        onReject={handleRejectCatProfile}
-                    />
-                ))}
+            <View style={styles.selectbuttonsContainer}>
+                <TouchableOpacity
+                    style={[styles.button, showCatProfiles ? styles.activeButton : null]}
+                    onPress={() => setShowCatProfiles(true)}
+                >
+                    <Text style={showCatProfiles ? styles.activeButtonText : styles.buttonText}>Cat Profiles</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    style={[styles.button, !showCatProfiles ? styles.activeButton : null]}
+                    onPress={() => setShowCatProfiles(false)}
+                >
+                    <Text style={!showCatProfiles ? styles.activeButtonText : styles.buttonText}>Doctor Profiles</Text>
+                </TouchableOpacity>
             </View>
 
+
             <View style={styles.cardContainer}>
-                {doctorProfiles.map((doctorProfile) => (
-                    <DoctorProfileCard
-                        key={doctorProfile.id}
-                        doctorProfile={doctorProfile}
-                        onDetails={handleDetails}
-                        onApprove={handleApproveDoctorProfile}
-                        onReject={handleRejectDoctorProfile}
-                    />
-                ))}
+                {showCatProfiles ? (
+                    catProfiles.map((catProfile) => (
+                        <CatProfileCard
+                            key={catProfile.id}
+                            catProfile={catProfile}
+                            onDetails={handleDetails}
+                            onApprove={handleApproveCatProfile}
+                            onReject={handleRejectCatProfile}
+                        />
+                    ))
+                ) : (
+                    doctorProfiles.map((doctorProfile) => (
+                        <DoctorProfileCard
+                            key={doctorProfile.id}
+                            doctorProfile={doctorProfile}
+                            onDetails={handleDetails}
+                            onApprove={handleApproveDoctorProfile}
+                            onReject={handleRejectDoctorProfile}
+                        />
+                    ))
+                )}
             </View>
         </View>
     );
@@ -252,12 +294,48 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#fff',
     },
+    selectbuttonsContainer: {
+        marginTop: 10,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        marginBottom: 10,
+    },
+    userIconContainer: {
+        borderRadius: 5,
+    },
+    thumbnailImage: {
+        width: 5,
+        height: 5,
+        borderRadius: 5,
+    },
+    button: {
+        paddingHorizontal: 20,
+        paddingVertical: 10,
+        marginHorizontal: 10,
+        borderRadius: 10,
+        borderWidth: 1,
+        borderColor: '#47C1FF'
+    },
+    buttonText: {
+        color: '#47C1FF', // Set default text color to blue
+        fontSize: 16,
+        fontFamily: 'Poppins-Regular',
+    },
+    activeButton: {
+        backgroundColor: '#47C1FF', // Set active button background color
+    },
+    activeButtonText: {
+        color: '#fff', // Set active text color to white
+        fontSize: 16,
+        fontFamily: 'Poppins-Regular',
+    },
+
     header: {
         backgroundColor: '#ffff',
-        borderBottomLeftRadius: 20,
-        borderBottomRightRadius: 20,
+        borderBottomLeftRadius: 30,
+        borderBottomRightRadius: 30,
         paddingHorizontal: 20,
-        paddingVertical: 35,
+        paddingVertical: 40,
         shadowColor: '#000',
         shadowOffset: {
             width: 0,
@@ -286,7 +364,6 @@ const styles = StyleSheet.create({
         borderColor: '#ccc',
         borderRadius: 10,
         marginBottom: 10,
-        padding: 10,
     },
     imageContainer: {
         alignItems: 'center',
@@ -297,24 +374,96 @@ const styles = StyleSheet.create({
         height: 130,
         borderRadius: 10,
     },
+    infoContainer: {
+        flexDirection: 'column', // Arrange items vertically
+        marginLeft: 10, // Add some margin to separate from image
+    },
+    catDetailsContainer: {
+        flexDirection: 'row', // Arrange items horizontally
+        alignItems: 'center', // Align items vertically in the center
+    },
     breedName: {
         fontSize: 16,
         fontWeight: 'bold',
         textAlign: 'left',
         marginBottom: 10,
         fontFamily: 'Poppins-SemiBold',
+        backgroundColor: '#212529',
+        color: '#fff',
+        paddingHorizontal: 10,
+        paddingVertical: 5,
+        borderRadius: 5,
     },
-    infoContainer: {
+    doctorName: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        textAlign: 'right',
+        marginLeft: 40,
+        fontFamily: 'Poppins-SemiBold',
+        color: '#212529',
+    },
+    doctorSpecialty: {
+        marginTop: 5,
+        fontSize: 16,
+        fontWeight: 'bold',
+        textAlign: 'left',
         marginBottom: 10,
+        fontFamily: 'Poppins-SemiBold',
+        backgroundColor: '#212529',
+        color: '#fff',
+        paddingHorizontal: 10,
+        paddingVertical: 5,
+        borderRadius: 5,
     },
-    button: {
+    catName: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        textAlign: 'left',
+        fontFamily: 'Poppins-SemiBold',
+        color: '#7E7E7E',
+        paddingHorizontal: 10,
+    },
+    catGender: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        textAlign: 'right',
+        marginLeft: 40,
+        fontFamily: 'Poppins-SemiBold',
+        color: '#212529',
+    },
+
+    buttonContainer: {
+        flexDirection: 'row', // Arrange items horizontally
+        justifyContent: 'space-between', // Space items evenly along the main axis
+        marginTop: 10,
+        backgroundColor: '#EDEDED',
+        padding: 10,
+    },
+    rejectbutton: {
         padding: 5,
-        backgroundColor: '#47C1FF',
+        backgroundColor: 'red',
         color: '#fff',
         textAlign: 'center',
         borderRadius: 5,
         marginTop: 5,
+        marginRight: 10,
+        padding: 5,
+        fontSize: 15,
     },
+    approvebutton: {
+        padding: 5,
+        backgroundColor: '#3EED00',
+        color: '#fff',
+        textAlign: 'center',
+        borderRadius: 5,
+        marginTop: 5,
+        marginLeft: 10,
+        padding: 5,
+        fontSize: 15,
+
+    },
+
+
 });
 
 export default ApproveProfile;

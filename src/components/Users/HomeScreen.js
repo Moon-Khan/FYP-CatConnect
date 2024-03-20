@@ -9,16 +9,17 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
+  FlatList,
+  Share,
 } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
-import HomeIcon from 'react-native-vector-icons/Feather';
-import DoctorIcon from 'react-native-vector-icons/FontAwesome';
-import ChatIcon from 'react-native-vector-icons/Ionicons';
-import ProfileIcon from 'react-native-vector-icons/Feather';
-import SearchIcon from 'react-native-vector-icons/MaterialIcons';
+
 import auth from '@react-native-firebase/auth';
 import { fetchApproveCatProfile, fetchUserDataFromFirestore, userNotifications } from '../../Services/firebase';
 import { updateNotificationFromFirestore } from '../../Services/firebase';
+import CatProfileRecommendationScreen from '../Recommendation/CatProfileRecommendationScreen';
+import Advertisement from './advetisement';
+
 
 const Stack = createStackNavigator();
 
@@ -31,8 +32,8 @@ const HomeScreen = ({ navigation }) => {
   const [hasUnreadNotifications, setHasUnreadNotifications] = useState(false);
   const [haReadNotifications, setHasReadNotifications] = useState(false);
 
-
   const user = auth().currentUser;
+
   useEffect(() => {
     const checkAuthentication = async () => {
       try {
@@ -61,7 +62,10 @@ const HomeScreen = ({ navigation }) => {
             id: doc.id,
             ...doc.data(),
           }));
+
+
           console.log('catProfiles--<:', profilesData);
+
           setCatProfiles(profilesData);
         }
       } catch (error) {
@@ -77,10 +81,7 @@ const HomeScreen = ({ navigation }) => {
       try {
 
         const unreadNotificationsSnapshot = await userNotifications(user.uid, 'unread');
-
         const readNotificationsSnapshot = await userNotifications(user.uid, 'read');
-
-
         const unreadNotificationsData = unreadNotificationsSnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
@@ -119,12 +120,9 @@ const HomeScreen = ({ navigation }) => {
       await Promise.all(
         notifications.map(async (notification) => {
           await updateNotificationFromFirestore(notification.id, 'read')
-          // await firestore().collection('Notifications').doc(notification.id).update({
-          //   status: 'read',
-          // });
+
         })
       );
-
       // Update state to reflect that all notifications have been read
       setNotifications([]);
       setHasUnreadNotifications(false);
@@ -145,70 +143,39 @@ const HomeScreen = ({ navigation }) => {
     setFilteredCatProfiles(filteredProfiles);
   };
 
-  const handleCatProfilePress = (catProfile) => {
-    navigation.navigate('CatScreen', { catProfile });
+  const handleCatProfilePress = async (catProfile) => {
+    try {
+
+      console.log('catProfile homes----->', catProfile)
+      navigation.navigate('CatScreen', { catProfile });
+    } catch (error) {
+      console.error('Error navigating to CatScreen:', error);
+    }
   };
 
-  const renderRecommendedItems = () => {
-    const category1 = 'New';
-    const category2 = 'Recommended';
-    const category3 = 'Persian';
-    const category4 = 'Colico';
-    const category5 = 'Himalayan';
-    const category6 = 'Black Contrast';
+  const handleShareCatProfile = (catProfile) => {
+    // Implement share functionality here
+    console.log("Sharing cat profile:", catProfile);
+    (async () => {
+      try {
+        const result = await Share.share({
+          message: `Check out this cat profile: ${catProfile.basicInfo.catName}`,
+          url: catProfile.mediaUpload.mediaList[0], // Assuming first image is the shareable content
+        });
 
-    const handleCategoryPress = (category) => {
-      // Handle the onPress event for the categories if needed
-      console.log(`Category ${category} pressed`);
-    };
-
-    return (
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.recommendedScrollContainer}
-      >
-        {/* First set of recommended items with blue background */}
-        <TouchableOpacity
-          style={styles.recommendedItem}
-          onPress={() => handleCategoryPress(category1)}
-        >
-          <Text style={{ ...styles.recommendedText, color: 'white' }}>{category1}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.recommendedItem2}
-          onPress={() => handleCategoryPress(category2)}
-        >
-          <Text style={{ ...styles.recommendedText, color: '#7E7E7E' }}>{category2}</Text>
-        </TouchableOpacity>
-
-        {/* Second set of recommended items with white background */}
-        <TouchableOpacity
-          style={styles.recommendedItem2}
-          onPress={() => handleCategoryPress(category3)}
-        >
-          <Text style={{ ...styles.recommendedText, color: '#7E7E7E' }}>{category3}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.recommendedItem2}
-          onPress={() => handleCategoryPress(category4)}
-        >
-          <Text style={{ ...styles.recommendedText, color: '#7E7E7E' }}>{category4}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.recommendedItem2}
-          onPress={() => handleCategoryPress(category5)}
-        >
-          <Text style={{ ...styles.recommendedText, color: '#7E7E7E' }}>{category5}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.recommendedItem2}
-          onPress={() => handleCategoryPress(category6)}
-        >
-          <Text style={{ ...styles.recommendedText, color: '#7E7E7E' }}>{category6}</Text>
-        </TouchableOpacity>
-      </ScrollView>
-    );
+        if (result.action === Share.sharedAction) {
+          if (result.activityType) {
+            console.log(`Shared via ${result.activityType}`);
+          } else {
+            console.log('Shared');
+          }
+        } else if (result.action === Share.dismissedAction) {
+          console.log('Dismissed');
+        }
+      } catch (error) {
+        console.error('Error sharing:', error.message);
+      }
+    })();
   };
 
   const renderPetCard = (catProfile) => {
@@ -216,7 +183,7 @@ const HomeScreen = ({ navigation }) => {
     if (!catProfile) {
       console.log('no cat profile')
       return (
-        <View key="noData" style={styles.petCard}>
+        <View key="noData" >
           <Text>No cat profile data available</Text>
         </View>
       );
@@ -227,113 +194,142 @@ const HomeScreen = ({ navigation }) => {
     const pics = catProfile.mediaUpload?.mediaList || [];
 
     return (
-      <TouchableOpacity
-        key={basicInfo.catName}
-        style={styles.petCard}
-        onPress={() => handleCatProfilePress(catProfile)}
-      >
-        <View style={styles.imageContainer}>
-          {pics.length > 0 &&
-            pics[0] ? (
-            <Image
-              style={styles.thumbnailImage}
-              source={{ uri: pics[0] }}
-            />
-          ) : (
-            <Text>No cat profile picture available</Text>
-          )}
-        </View>
-        <View style={styles.cardContent}>
-          <Text style={styles.petName}>{basicInfo.catName}</Text>
-          <Text style={styles.breed}>{basicInfo.breed}</Text>
-          <Text style={styles.available}>{personalityAndAvailability.availabilityStatus}</Text>
-          <Image
-            style={styles.hearticon}
-            resizeMode="cover"
-            source={require("../../../assets/Catassets/hearts.png")}
-          />
-        </View>
-      </TouchableOpacity>
+      <View style={styles.petCardContainer}>
+
+        <TouchableOpacity
+          key={basicInfo.catName}
+          style={styles.petCard}
+          onPress={() => handleCatProfilePress(catProfile)}>
+
+          <View style={styles.imageContainer}>
+            {pics.length > 0 &&
+              pics[0] ? (
+              <Image
+                style={styles.thumbnailImage}
+                source={{ uri: pics[0] }}
+              />
+            ) : (
+              <Text>No cat profile picture available</Text>
+            )}
+          </View>
+          <View style={styles.cardContent}>
+            <Text style={styles.breedName}>{basicInfo.breed}</Text>
+            <Text style={styles.available}>{personalityAndAvailability.availabilityStatus}</Text>
+            <Text style={styles.catName}>{basicInfo.catName}</Text>
+            <TouchableOpacity onPress={() => handleShareCatProfile(catProfile)}>
+              <Image
+                style={styles.shareIcon}
+                resizeMode="cover"
+                source={require("../../../assets/Catassets/share.png")}
+              />
+            </TouchableOpacity>
+          </View>
+
+        </TouchableOpacity>
+      </View>
+
     );
   };
 
-
   return (
-    <View style={styles.container}>
-      <View style={styles.content}>
-      </View>
-      <View style={styles.header1}>
-        <Text style={styles.greeting}>Hello {userData.firstname || ''} 👋</Text>
-        {/* <Image
-          style={styles.handicon}
-          resizeMode="cover"
-          source={require("../../assets/Catassets/hand.png")}
-        /> */}
-      </View>
-      <View style={styles.header}>
-        <Text style={styles.greeting}>Select Best Breed For Your Cat </Text>
-      </View>
-      <View style={styles.searchContainer}>
-        <View style={styles.searchInputContainer}>
-          <SearchIcon name="search" size={25} style={{ marginLeft: 10 }} color="#9F9F9F" />
-          <TextInput
-            placeholder="Search..."
-            placeholderTextColor="#9F9F9F"
-            onChangeText={handleSearch}
-            value={searchText}
-            style={styles.searchInput}
+    <View style={{ flex: 1 }}>
+
+      <ScrollView >
+        <View style={styles.container}>
+
+          <View style={styles.header1}>
+            <Text style={styles.greeting}>Hi {userData.firstname || ''} 👋</Text>
+          </View>
+          <View style={styles.header}>
+            <Text style={styles.greeting2}>Find the best breed for your cat </Text>
+          </View>
+          <View style={styles.searchContainer}>
+            <View style={styles.searchInputContainer}>
+              <Image
+                style={styles.searchIcon}
+                resizeMode="cover"
+                source={require("../../../assets/Catassets/search.png")}
+              />
+              <TextInput
+                placeholder="Search..."
+                placeholderTextColor="#9F9F9F"
+                onChangeText={handleSearch}
+                value={searchText}
+                style={styles.searchInput}
+              />
+              <Image
+                style={styles.filtericon}
+                resizeMode="cover"
+                source={require("../../../assets/Catassets/filter.png")}
+              />
+            </View>
+          </View>
+
+          <TouchableOpacity style={styles.notifibutton} onPress={handleNotificationPress}>
+            <Image
+              style={styles.NotificationIcon}
+              resizeMode="cover"
+              source={require("../../../assets/Catassets/alarm.png")}
+            />
+            {hasUnreadNotifications && <View style={styles.unreadDot} />}
+            {haReadNotifications && <View style={styles.readDot} />}
+          </TouchableOpacity>
+
+          <Advertisement />
+
+          <Text style={styles.feedText}>Feed</Text>
+          <FlatList
+            data={[{ key: 'horizontalList' }]}
+            renderItem={() => (
+              <FlatList
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                data={searchText.trim() !== '' ? filteredCatProfiles : catProfiles}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({ item }) => renderPetCard(item)}
+              />
+            )}
+            keyExtractor={(item) => item.key}
           />
-          <Image
-            style={styles.filtericon}
-            resizeMode="cover"
-            source={require("../../../assets/Catassets/filter.png")}
-          />
+          <Text style={styles.feedText}>Recommended</Text>
+          
+          <CatProfileRecommendationScreen />
+
         </View>
-        <View style={styles.recommendedContainer}>{renderRecommendedItems()}</View>
-      </View>
-
-
-      <TouchableOpacity style={styles.notifibutton} onPress={handleNotificationPress}>
-        <Image
-          style={styles.NotificationIcon}
-          resizeMode="cover"
-          source={require("../../../assets/Catassets/notification.png")}
-        />
-        {hasUnreadNotifications && <View style={styles.unreadDot} />}
-        {haReadNotifications && <View style={styles.readDot} />}
-      </TouchableOpacity>
-
-      <ScrollView>
-        {searchText.trim() !== ''
-          ? filteredCatProfiles.map((catProfile) => renderPetCard(catProfile))
-          : catProfiles.map((catProfile) => renderPetCard(catProfile))}
       </ScrollView>
       <View style={styles.bottomMenu}>
         <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Home')}>
-          <HomeIcon name="home" size={24} color="#47C1FF" />
+
+          <Image source={require('../../../assets/Catassets/home-2.png')} style={{ width: 24, height: 24 }} />
           <Text style={{ ...styles.menuText, color: '#47C1FF' }}>Home</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('SelectDoctor')}>
-          <DoctorIcon name="stethoscope" size={24} color="#9F9F9F" />
+          <Image source={require('../../../assets/Catassets/maki_doctor.png')} style={{ width: 24, height: 27 }} />
+
           <Text style={{ ...styles.menuText, color: '#9F9F9F' }}>Doctor</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('ChatUsers')}>
-          <ChatIcon name="chatbox-ellipses-outline" size={24} color="#9F9F9F" />
+          <Image source={require('../../../assets/Catassets/chat.png')} style={{ width: 24, height: 24 }} />
+
           <Text style={{ ...styles.menuText, color: '#9F9F9F' }}>Chat</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('ProfileScreen')}>
-          <ProfileIcon name="user" size={24} color="#9F9F9F" />
+          <Image source={require('../../../assets/Catassets/profilehome.png')} style={{ width: 24, height: 27 }} />
+
           <Text style={{ ...styles.menuText, color: '#9F9F9F' }}>Profile</Text>
         </TouchableOpacity>
       </View>
     </View>
+
+
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    padding: 15,
+    backgroundColor: 'white'
   },
   header: {
     flexDirection: 'row',
@@ -344,20 +340,21 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   greeting: {
-    fontSize: 20,
-    fontFamily: 'Poppins-SemiBold',
+    paddingTop: 15,
+    fontSize: 24,
+    fontFamily: 'Poppins-Bold',
     color: '#212529',
     flex: 1,
     flexDirection: 'row',
   },
-  handicon: {
+  greeting2: {
+    fontSize: 16,
+    fontFamily: 'Poppins-Regular',
+    color: '#212529',
     flex: 1,
     flexDirection: 'row',
-    width: 30,
-    height: 30,
-    position: "absolute",
-    left: 125,
   },
+
   filtericon: {
     width: 25,
     height: 25,
@@ -369,51 +366,17 @@ const styles = StyleSheet.create({
   },
   NotificationIcon: {
     width: 30,
-    height: 30,
+    height: 40,
     position: "absolute",
-    right: 10,
-    top: 5,
+    right: 5,
   },
-  hearticon: {
-    width: 110,
-    height: 15,
-    position: "absolute",
-    top: 79,
+  searchIcon: {
+    marginLeft: 10,
+    width: 25,
+    height: 25,
   },
-  subText: {
-    fontSize: 20,
-    fontFamily: 'Poppins-SemiBold',
-    color: '#212529',
-  },
-  recommendedContainer: {
-    marginTop: 16,
-  },
-  recommendedScrollContainer: {
-    paddingRight: 16,
-  },
-  recommendedItem: {
-    backgroundColor: 'white',
-    paddingTop: 10,
-    paddingLeft: 17,
-    paddingRight: 17,
-    marginRight: 10,
-    borderRadius: 20,
-    backgroundColor: '#47C1FF',
 
-  },
-  recommendedItem2: {
-    backgroundColor: '#fff',
-    padding: 10,
-    borderRadius: 15,
-    marginRight: 10,
-    borderRadius: 20,
-  },
-  recommendedText: {
-    fontFamily: 'Poppins-SemiBold',
-    fontSize: 13,
-  },
   notifibutton: {
-    paddingTop: 5,
     paddingBottom: 5,
     paddingLeft: 14,
     paddingRight: 14,
@@ -437,7 +400,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 5,
     right: 25,
-    // backgroundColor: 'black',
     width: 12,
     height: 10,
     borderRadius: 5,
@@ -447,7 +409,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderColor: '#fff',
-    backgroundColor: '#fff',
+    backgroundColor: '#F5F5F5',
     width: '100%',
     borderWidth: 1,
     borderRadius: 25,
@@ -462,63 +424,102 @@ const styles = StyleSheet.create({
   searchContainer: {
     marginTop: 16,
   },
-  imageContainer: {
-    marginRight: 15,
+  RecommendText: {
+    fontSize: 20,
+    fontFamily: 'Poppins-SemiBold',
+    color: '#212529',
   },
-  thumbnailImage: {
-    width: 90,
-    height: 100,
-    borderRadius: 5,
+
+  feedText: {
+    marginTop: 20,
+    fontSize: 20,
+    fontFamily: 'Poppins-SemiBold',
+    color: '#212529',
+    marginBottom: 10,
+  },
+  shareIcon: {
+    width: 20,
+    height: 20,
+    position: 'absolute',
+    bottom: '10%',
+    right: '10%',
+    marginBottom: 25,
+
+  },
+  cardContent: {
+    flexDirection: 'column',
+    marginLeft: 10,
+
   },
   petCardContainer: {
-    marginTop: 16,
+    width: 135,
+    marginRight: 10,
   },
   petCard: {
-    display: 'flex',
-    flexDirection: 'row',
-    backgroundColor: '#fff',
-    padding: 15,
-    paddingLeft: 20,
-    borderRadius: 8,
-    margin: 12,
-    marginLeft: 0,
-    marginBottom: 2,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 20,
+    paddingBottom: 10,
+  },
+
+  imageContainer: {
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  thumbnailImage: {
     width: '100%',
+    height: 100,
+    borderTopRightRadius: 20,
+    borderTopLeftRadius: 20,
   },
-  petName: {
-    fontSize: 16,
-    marginBottom: 1,
-    color: '#212529',
+
+  catName: {
+    flexDirection: 'row', // Arrange items horizontally
+    fontSize: 12,
+    fontWeight: 'bold',
+    textAlign: 'right',
     fontFamily: 'Poppins-SemiBold',
-  },
-  breed: {
-    fontSize: 14,
     color: '#7E7E7E',
-    marginBottom: 1,
-    fontFamily: 'Poppins-Medium',
+    paddingHorizontal: 10,
+    marginTop: -15,
+
+  },
+  breedName: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    textAlign: 'left',
+    marginBottom: 5,
+    fontFamily: 'Poppins-SemiBold',
+    backgroundColor: '#212529',
+    color: '#fff',
+    paddingHorizontal: 12,
+    paddingVertical: 5,
+    borderRadius: 20,
+    width: '55%',
   },
   available: {
-    fontSize: 14,
-    color: '#7E7E7E',
-    marginBottom: 1,
+    fontSize: 12,
+    fontWeight: 'bold',
+    textAlign: 'left',
+    marginLeft: 5,
     fontFamily: 'Poppins-SemiBold',
+    color: '#212529',
   },
+
   bottomMenu: {
+    marginTop: 2,
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
-    backgroundColor: '#F5F5F5',
-    paddingVertical: 0, // Adjust as needed
+    backgroundColor: '#FAFAFA',
   },
-  // Add other styles as needed
   menuItem: {
     alignItems: 'center',
+
   },
   menuText: {
-    marginTop: 5, // Adjust as needed
+    marginTop: 1,
   },
-
 });
 
 export default HomeScreen;
-

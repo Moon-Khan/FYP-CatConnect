@@ -326,7 +326,12 @@ import { useNavigation } from '@react-navigation/native';
 import { fetchUserDataFromFirestore, addAppointmentsDataToFirestore, fetchBookedAppointmentsFromFirestore } from '../../Services/firebase';
 
 const DoctorDetailScreen = ({ route }) => {
+
     const { doctorData } = route.params;
+    console.log('doctor detail screen--------->', doctorData)
+    const { name, specialization, contactNumber, availability } = doctorData._data;
+    console.log('doctor detail screen--------->', name)
+
     const user = auth().currentUser;
     const [userData, setUserData] = useState(null);
     const [selectedDay, setSelectedDay] = useState(null);
@@ -351,7 +356,12 @@ const DoctorDetailScreen = ({ route }) => {
         const fetchBookedAppointments = async () => {
             try {
                 if (!selectedDay || !doctorData) return;
-                const appointments = await fetchBookedAppointmentsFromFirestore(selectedDay, doctorData.id);
+
+                console.log('doctorData--->',doctorData)
+
+                console.log('doctorData.doctorid-->',doctorData._data.doctorid)
+
+                const appointments = await fetchBookedAppointmentsFromFirestore(selectedDay, doctorData._data.doctorid);
                 console.log('fetch appointment in detail scren', appointments)
                 setBookedAppointments(appointments);
             } catch (error) {
@@ -369,6 +379,8 @@ const DoctorDetailScreen = ({ route }) => {
 
     const handleBookAppointment = async () => {
         try {
+
+            console.log('book appointsment byuton pressend------>')
             if (!selectedDay || !selectedTimeSlot) {
                 console.log('Please select a day and a time slot.');
                 return;
@@ -394,16 +406,24 @@ const DoctorDetailScreen = ({ route }) => {
                 return;
             }
 
+            console.log('------user------>',user)
+            console.log('-----userData------>',userData)
+            console.log('-------doctorData------>',doctorData)
+
+
+
             // If the slot is available, proceed with booking
             if (user && userData && doctorData) {
                 const appointment = {
                     userId: user.uid,
                     userName: userData.firstname,
-                    doctorId: doctorData.id,
+                    doctorId: doctorData._data.doctorid,
                     day: selectedDay,
                     timeSlot: selectedTimeSlot,
                     status: 'pending',
                 };
+
+
                 await addAppointmentsDataToFirestore(appointment);
                 console.log('Appointment request sent');
                 navigation.navigate('Home');
@@ -432,19 +452,19 @@ const DoctorDetailScreen = ({ route }) => {
         <ScrollView contentContainerStyle={styles.container}>
             <Image style={styles.doctorImage} source={require("../../../assets/Catassets/doctorPortrait.png")} />
             <View style={styles.detailsContainer}>
-                <Text style={styles.title}>{doctorData.username}</Text>
+                <Text style={styles.title}>{name}</Text>
                 <View style={styles.detailContainer}>
                     <Text style={styles.label}>Specialization:</Text>
-                    <Text style={styles.value}>{doctorData.specialization}</Text>
+                    <Text style={styles.value}>{specialization}</Text>
                 </View>
                 <View style={styles.detailContainer}>
                     <Text style={styles.label}>Contact Info:</Text>
-                    <Text style={styles.value}>{doctorData.contactNumber}</Text>
+                    <Text style={styles.value}>{contactNumber}</Text>
                 </View>
                 <View style={styles.detailContainer}>
                     <Text style={styles.label}>Availability:</Text>
                     <ScrollView horizontal={true}>
-                        {Object.keys(doctorData.availability).map((day, index) => (
+                        {Object.keys(availability).map((day, index) => (
                             <TouchableOpacity key={index} onPress={() => setSelectedDay(day)}>
                                 <Text style={[styles.day, selectedDay === day && styles.selectedDay]}>{day}</Text>
                             </TouchableOpacity>
@@ -452,21 +472,11 @@ const DoctorDetailScreen = ({ route }) => {
                     </ScrollView>
                 </View>
 
-                {selectedDay && doctorData.availability[selectedDay].length > 0 ? (
-                    doctorData.availability[selectedDay].map((slot, index) => (
+                {selectedDay && availability[selectedDay].length > 0 ? (
+                    availability[selectedDay].map((slot, index) => (
                         <View key={index}>
                             {slot.startTime && slot.endTime ? (
-                                // <TouchableOpacity
-                                //     onPress={() => setSelectedTimeSlot(slot)}
-                                //     style={[
-                                //         styles.slot,
-                                //         selectedTimeSlot === slot && styles.selectedSlot // Apply border style if selected
-                                //     ]}
-                                // >
-                                //     <Text style={styles.slotText}>
-                                //         {timestampToDate(slot.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - {timestampToDate(slot.endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                //     </Text>
-                                // </TouchableOpacity>
+
                                 <TouchableOpacity
                                     onPress={() => setSelectedTimeSlot(slot)}
                                     style={[

@@ -62,7 +62,7 @@ const DoctorSignup = () => {
             }
 
 
-            await addDoctorToFirestore(uid, email, firstname, password, '', '', '', '', '');
+            await addDoctorToFirestore(uid, email, firstname, password,'', '', '', '', '', '');
 
             dispatch(setUser(uid));
             dispatch(setLoading(false));
@@ -89,7 +89,7 @@ const DoctorSignup = () => {
 
             // Retrieve user data and add to Firestore
             const uid = userCredential.user.uid;
-            await addDoctorToFirestore(uid, userCredential.user.email, userCredential.user.displayName, '', '', '', '', '', '', '', '');
+            await addDoctorToFirestore(uid, userCredential.user.email, userCredential.user.displayName,'', '', '', '', '', '', '');
             // Check if it's an existing user or a new one
             const isExistingUser = await fetchDoctorDataFromFirestore(uid);
             if (isExistingUser) {
@@ -97,7 +97,7 @@ const DoctorSignup = () => {
                 navigation.navigate('DoctorHomeScreen');
             } else {
                 // If it's a new user, navigate to the CatBasicInfo screen
-                navigation.navigate('DoctorsInfo');
+                navigation.navigate('DoctorBasicInfo1');
             }
         } catch (error) {
             // Handle errors
