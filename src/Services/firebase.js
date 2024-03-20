@@ -503,6 +503,31 @@ const fetchUserNofiticationFromFirestore = async (userId) => {
   }
 }
 
+// const fetchCatProfilesForUser = async (userId) => {
+//   try {
+//     const catProfilesSnapshot = await firestore()
+//       .collection('users')
+//       .doc(userId)
+//       .collection('CatProfiles')
+//       .get();
+
+//     console.log('catprofiles in frieasstote-->', catProfilesSnapshot)
+
+//     if (catProfilesSnapshot) {
+//       return catProfilesSnapshot;
+//     }
+//     else {
+//       console.log('error for fetching user cat profies');
+//     }
+//     // const catProfilesData = catProfilesSnapshot.docs.map(doc => doc.data());
+//     // return catProfilesData;
+//   } catch (error) {
+//     console.error('Error fetching cat profiles for user:', error);
+//     throw error;
+//   }
+// };
+
+
 const fetchCatProfilesForUser = async (userId) => {
   try {
     const catProfilesSnapshot = await firestore()
@@ -511,27 +536,31 @@ const fetchCatProfilesForUser = async (userId) => {
       .collection('CatProfiles')
       .get();
 
-    if (catProfilesSnapshot) {
-      return catProfilesSnapshot;
-    }
-    else {
-      console.log('error for fetching user cat profies');
-    }
-    // const catProfilesData = catProfilesSnapshot.docs.map(doc => doc.data());
-    // return catProfilesData;
+    const catProfilesData = catProfilesSnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+
+    console.log('cat profiels firestore(curernt user)--->',catProfilesData)
+    return catProfilesData;
   } catch (error) {
     console.error('Error fetching cat profiles for user:', error);
     throw error;
   }
 };
+
+
 const fetchApproveCatProfile = async () => {
   try {
     const approveCatProfileDocs = await firestore().collection('approveCatProfiles').get();
 
+  
     if (approveCatProfileDocs) {
       // Filter documents based on the status not equal to "pending"
       const filteredDocs = approveCatProfileDocs.docs.filter(doc => doc.data().status !== "pending");
-
+      const catProfileIds = approveCatProfileDocs.docs.map(doc => doc.id);
+      
+      console.log('Cat Profile IDs:', catProfileIds);
       console.log('Filtered firebase cats:', filteredDocs);
 
       return filteredDocs;
