@@ -37,6 +37,9 @@ import MonitorUsers from './components/Admin/MonitorUsers';
 import UserDetailScreen from './components/Admin/UserDetailScreen'
 import UserCatDetails from './components/Admin/UserCatDetail';
 import ApproveProfile from './components/Admin/ApproveProfile';
+
+import CatProfileRecommendationScreen from './components/Recommendation/CatProfileRecommendationScreen';
+import VideoCallScreen from './components/Chat/VideoCallScreen';
 import AnnouncementScreen from './components/Admin/sendAnnouncement_3';
 import CatProfileRecommendationScreen from './components/Recommendation/CatProfileRecommendationScreen';
 import AllAnnouncements from './components/Admin/allAnnouncmenet_1';
@@ -47,7 +50,7 @@ const Stack = createStackNavigator();
 const App = () => (
   <Provider store={store}>
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Splashscreen">
+      <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Home">
 
         <Stack.Screen name="Splashscreen" component={Splashscreen} />
         <Stack.Screen name="Signup" component={SignupScreen} />
@@ -85,8 +88,8 @@ const App = () => (
         <Stack.Screen name="CatProfileRecommendationScreen" component={CatProfileRecommendationScreen} />
         <Stack.Screen name="AllAnnouncements" component={AllAnnouncements} />
         <Stack.Screen name="SelectRecepientsforAnnouncmenets" component={SelectRecepientsforAnnouncmenets} />
-
-
+        <Stack.Screen name="CatProfileRecommendationScreen" component={CatProfileRecommendationScreen} />
+        <Stack.Screen name="VideoCallScreen" component={VideoCallScreen} />
 
       </Stack.Navigator>
     </NavigationContainer>

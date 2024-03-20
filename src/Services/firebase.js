@@ -591,42 +591,6 @@ const fetchUserNofiticationFromFirestore = async (userId) => {
 //       .collection('CatProfiles')
 //       .get();
 
-//     const catProfilesData = catProfilesSnapshot.docs.map(doc => ({
-//       id: doc.id,
-//       ...doc.data()
-//     }));
-
-//     else {
-//   console.log('error for fetching user cat profies');
-// }
-//     // const catProfilesData = catProfilesSnapshot.docs.map(doc => doc.data());
-//     // return catProfilesData;
-//   } catch (error) {
-//   console.error('Error fetching cat profiles for user:', error);
-//   throw error;
-// }
-// };
-// const fetchApproveCatProfile = async () => {
-//   try {
-//     const approveCatProfileDocs = await firestore().collection('approveCatProfiles').get();
-
-//     if (approveCatProfileDocs) {
-//       // Filter documents based on the status not equal to "pending"
-//       const filteredDocs = approveCatProfileDocs.docs.filter(doc => doc.data().status !== "pending");
-
-//       console.log('Filtered firebase cats:', filteredDocs);
-
-//       return filteredDocs;
-//     } else {
-//       console.log('Approve cat profile does not exist in Firestore(firebase.js).');
-//       return []; // Return an empty array if no documents found
-//     }
-//   } catch (error) {
-//     console.error('Error fetching approve cat profile data:', error);
-//     throw error;
-//   }
-// }
-
 
 const fetchCatProfilesForUser = async (userId) => {
   try {
@@ -636,6 +600,7 @@ const fetchCatProfilesForUser = async (userId) => {
       .collection('CatProfiles')
       .get();
 
+
     // const catProfilesData = catProfilesSnapshot.docs.map(doc => ({
     //   id: doc.id,
     //   ...doc.data()
@@ -643,6 +608,14 @@ const fetchCatProfilesForUser = async (userId) => {
 
     console.log('cat profiels firestore(curernt user)--->', catProfilesSnapshot)
     return catProfilesSnapshot;
+
+    const catProfilesData = catProfilesSnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+
+    console.log('cat profiels firestore(curernt user)--->',catProfilesData)
+    return catProfilesData;
   } catch (error) {
     console.error('Error fetching cat profiles for user:', error);
     throw error;
@@ -675,10 +648,13 @@ const fetchApproveCatProfile = async () => {
   try {
     const approveCatProfileDocs = await firestore().collection('approveCatProfiles').get();
 
+  
     if (approveCatProfileDocs) {
       // Filter documents based on the status not equal to "pending"
       const filteredDocs = approveCatProfileDocs.docs.filter(doc => doc.data().status !== "pending");
-
+      const catProfileIds = approveCatProfileDocs.docs.map(doc => doc.id);
+      
+      console.log('Cat Profile IDs:', catProfileIds);
       console.log('Filtered firebase cats:', filteredDocs);
 
       return filteredDocs;
