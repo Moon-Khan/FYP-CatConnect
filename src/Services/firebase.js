@@ -340,34 +340,29 @@ import auth from '@react-native-firebase/auth';
 const fetchUserDataFromFirestore = async (userId) => {
   try {
     const userDoc = await firestore().collection('users').doc(userId).get();
-    console.log('userDoc firebase:', userDoc.data());
     if (userDoc.exists) {
       return userDoc;
     } else {
       console.log('User document does not exist in Firestore(firebase.js).');
-      return null; // Return null if document doesn't exist
     }
   } catch (error) {
     console.error('Error fetching user data:', error);
-    throw error;
   }
 };
 
 const fetchDoctorDataFromFirestore = async (userId) => {
   try {
     const doctorDoc = await firestore().collection('doctors').doc(userId).get();
-    console.log('doctorDoc firebase:', doctorDoc.data());
     if (doctorDoc.exists) {
       return doctorDoc;
     } else {
       console.log('Doctor document does not exist in Firestore(firebase.js).');
-      return null; // Return null if document doesn't exist
     }
   } catch (error) {
     console.error('Error fetching doctor data:', error);
-    throw error;
   }
 };
+
 const fetchAllDoctorDataFromFirestore = async () => {
   try {
     const doctorDocs = await firestore().collection('doctors').get();
@@ -399,16 +394,10 @@ const fetchAllUserDataFromFirestore = async () => {
 
 const fetchBookedAppointmentsFromFirestore = async (selectedDay, doctorId) => {
   try {
-
-    console.log('selectedDay-->',selectedDay)
-    console.log('doctorId-->',doctorId)
-
     const appointmentsSnapshot = await firestore().collection('appointments')
       .where('doctorId', '==', doctorId)
       .where('day', '==', selectedDay)
       .get();
-
-    console.log('appointmentsSnapshot fetchBookedAppointmentsFromFirestore ----->', appointmentsSnapshot)
 
     const bookedAppointments = appointmentsSnapshot.docs.map(doc => doc.data());
     return bookedAppointments;
@@ -501,75 +490,6 @@ const fetchCatProfilesFromFirestore = async () => {
   }
 };
 
-// const createAnnouncement = async (announcementData) => {
-//   try {
-//     // Assuming you have a collection named 'announcements' in your Firestore database
-//     await firestore().collection('announcements').add(announcementData);
-//     console.log('Announcement created successfully');
-//   } catch (error) {
-//     console.error('Error creating announcement:', error);
-//     throw error; // Propagate the error to handle it in the calling component
-//   }
-// };
-const createAnnouncementAndNotifyUsers = async (announcementData) => {
-  try {
-    const announcementRef = await firestore().collection('announcements').add(announcementData.message); // Accessing recipients array from message property
-    console.log('Announcement created successfully');
-
-    const announcementMessage = announcementData.message.text; // Accessing text property from message object
-    const recipients = announcementData.message.recipients || []; // Ensure recipients array is defined
-
-    // Fetch user IDs
-    const usersSnapshot = await firestore().collection('users').get();
-    const userIds = usersSnapshot.docs.map(doc => doc.id);
-    console.log('userid-->', userIds);
-
-    // Fetch doctor IDs
-    const doctorsSnapshot = await firestore().collection('doctors').get();
-    const doctorIds = doctorsSnapshot.docs.map(doc => doc.id);
-    console.log('doctorsID-->', doctorIds);
-
-    // Filter recipients based on whether they are users or doctors
-    const userRecipients = recipients.filter(id => userIds.includes(id));
-    console.log('userRecipients-->', userRecipients);
-    const doctorRecipients = recipients.filter(id => doctorIds.includes(id));
-    console.log('doctorRecipients-->', doctorRecipients);
-
-    // Send notifications to users
-    const userNotificationPromises = userRecipients.map(async (userId) => {
-      await addNotificationToFirestore(userId, announcementMessage, 'unread');
-      console.log('announcement notification sent to user')
-    });
-    await Promise.all(userNotificationPromises);
-
-    // Send notifications to doctors
-    const doctorNotificationPromises = doctorRecipients.map(async (doctorId) => {
-      await addNotificationForDoctorToFirestore(doctorId, announcementMessage, 'unread');
-      console.log('announcement notification sent to doctor')
-    });
-    await Promise.all(doctorNotificationPromises);
-
-  } catch (error) {
-    console.error('Error creating announcement and notifying users:', error);
-    throw error;
-  }
-};
-
-const fetchAllAnnouncementsForAdmin = async () => {
-  try {
-    const announcementsSnapshot = await firestore().collection('announcements').get();
-    const announcementsData = announcementsSnapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
-    return announcementsData;
-  } catch (error) {
-    console.error('Error fetching announcements:', error);
-    throw error;
-  }
-};
-
-
 const fetchUserNofiticationFromFirestore = async (userId) => {
   try {
     const notificationDocs = await firestore().collection('notifications').where('userId', '==', userId).get();
@@ -591,6 +511,22 @@ const fetchUserNofiticationFromFirestore = async (userId) => {
 //       .collection('CatProfiles')
 //       .get();
 
+//     console.log('catprofiles in frieasstote-->', catProfilesSnapshot)
+
+//     if (catProfilesSnapshot) {
+//       return catProfilesSnapshot;
+//     }
+//     else {
+//       console.log('error for fetching user cat profies');
+//     }
+//     // const catProfilesData = catProfilesSnapshot.docs.map(doc => doc.data());
+//     // return catProfilesData;
+//   } catch (error) {
+//     console.error('Error fetching cat profiles for user:', error);
+//     throw error;
+//   }
+// };
+
 
 const fetchCatProfilesForUser = async (userId) => {
   try {
@@ -600,42 +536,12 @@ const fetchCatProfilesForUser = async (userId) => {
       .collection('CatProfiles')
       .get();
 
-
-    // const catProfilesData = catProfilesSnapshot.docs.map(doc => ({
-    //   id: doc.id,
-    //   ...doc.data()
-    // }));
-
-    console.log('cat profiels firestore(curernt user)--->', catProfilesSnapshot)
-    return catProfilesSnapshot;
-
     const catProfilesData = catProfilesSnapshot.docs.map(doc => ({
       id: doc.id,
       ...doc.data()
     }));
 
     console.log('cat profiels firestore(curernt user)--->',catProfilesData)
-    return catProfilesData;
-  } catch (error) {
-    console.error('Error fetching cat profiles for user:', error);
-    throw error;
-  }
-};
-
-const fetchCatProfilesForUserrecomend = async (userId) => {
-  try {
-    const catProfilesSnapshot = await firestore()
-      .collection('users')
-      .doc(userId)
-      .collection('CatProfiles')
-      .get();
-
-    const catProfilesData = catProfilesSnapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    }));
-
-    console.log('cat profiels firestore(curernt user)--->', catProfilesData)
     return catProfilesData;
   } catch (error) {
     console.error('Error fetching cat profiles for user:', error);
@@ -667,27 +573,6 @@ const fetchApproveCatProfile = async () => {
     throw error;
   }
 }
-const fetchApproveDocotorProfile = async () => {
-  try {
-    const approveCatProfileDocs = await firestore().collection('approveDoctorProfile').get();
-
-    if (approveCatProfileDocs) {
-      // Filter documents based on the status not equal to "pending"
-      const filteredDocs = approveCatProfileDocs.docs.filter(doc => doc.data().status !== "pending");
-
-      console.log('Filtered firebase cats:', filteredDocs);
-
-      return filteredDocs;
-    } else {
-      console.log('Approve cat profile does not exist in Firestore(firebase.js).');
-      return []; // Return an empty array if no documents found
-    }
-  } catch (error) {
-    console.error('Error fetching approve cat profile data:', error);
-    throw error;
-  }
-}
-
 
 const fetchforAdminApproveCatProfile = async () => {
   try {
@@ -756,6 +641,28 @@ const updateApproveDoctorProfile = async (doctorProfileId, status) => {
   }
 };
 
+const fetchApproveDocotorProfile = async () => {
+  try {
+    const approveCatProfileDocs = await firestore().collection('approveDoctorProfile').get();
+
+    if (approveCatProfileDocs) {
+      // Filter documents based on the status not equal to "pending"
+      const filteredDocs = approveCatProfileDocs.docs.filter(doc => doc.data().status !== "pending");
+
+      console.log('Filtered firebase cats:', filteredDocs);
+
+      return filteredDocs;
+    } else {
+      console.log('Approve cat profile does not exist in Firestore(firebase.js).');
+      return []; // Return an empty array if no documents found
+    }
+  } catch (error) {
+    console.error('Error fetching approve cat profile data:', error);
+    throw error;
+  }
+}
+
+
 const approveDoctorProfile = async (data) => {
   try {
     await firestore().collection('approveDoctorProfile').add(data);
@@ -823,7 +730,7 @@ const addCatProfileToFirestore = async (userId, data) => {
   }
 };
 
-const addUserDataToFirestore = async (userId, emailId, firstname, password, fcmtoken, lastname, contact, city, gender, chkadmin) => {
+const addUserDataToFirestore = async (userId, emailId, firstname, password, fcmtoken, lastname, contact, city, gender) => {
   try {
     const userDocRef = firestore().collection('users').doc(userId);
     const userData = {
@@ -835,7 +742,6 @@ const addUserDataToFirestore = async (userId, emailId, firstname, password, fcmt
       contact: contact,
       city: city,
       gender: gender,
-      chkadmin: chkadmin,
     };
 
     await userDocRef.set(userData);
@@ -846,7 +752,7 @@ const addUserDataToFirestore = async (userId, emailId, firstname, password, fcmt
   }
 };
 
-const addDoctorToFirestore = async (doctorId, email, username, password, specialization, qualification, experience, availability, contactNumber, city) => {
+const addDoctorToFirestore = async (doctorId, email, username, password, specialization, qualification, availability, contactNumber, city) => {
   try {
     const doctorDocRef = firestore().collection('doctors').doc(doctorId);
     const doctorData = {
@@ -855,7 +761,6 @@ const addDoctorToFirestore = async (doctorId, email, username, password, special
       password: password,
       specialization: specialization,
       qualification: qualification,
-      experience: experience,
       availability: availability,
       contactNumber: contactNumber,
       city: city,
@@ -875,24 +780,6 @@ const addNotificationToFirestore = async (userId_, message_, status_) => {
       message: message_,
       status: status_,
     });
-
-    console.log('notification added')
-  } catch (error) {
-    console.error('Error adding notification data:', error);
-    throw error;
-  }
-};
-
-
-const addNotificationForDoctorToFirestore = async (userId_, message_, status_) => {
-  try {
-    await firestore().collection('notificationsDcoctors').add({
-      userId: userId_,
-      message: message_,
-      status: status_,
-    });
-
-    console.log('notification added')
   } catch (error) {
     console.error('Error adding notification data:', error);
     throw error;
@@ -985,6 +872,7 @@ const updateCatProfile = async (userid, catId, updatedCatProfile) => {
 };
 
 
+
 const deleteCatProfile = async (catProfileId, userid) => {
   try {
     await firestore()
@@ -1024,18 +912,14 @@ export {
   fetchAppointmentsCondFromFirestore,
   fetchUserNofiticationFromFirestore,
   fetchAllUserDataFromFirestore,
-  fetchCatProfilesForUserrecomend,
   fetchCatProfilesForUser,
   fetchApproveCatProfile,
-  fetchAllAnnouncementsForAdmin,
-  fetchApproveDocotorProfile,
   approveDoctorProfile,
   fetchforAdminApproveCatProfile,
   fetchforAdminApproveDoctorProfile,
   approveCatProfile,
   addDoctorToFirestore,
   addUserDataToFirestore,
-  addNotificationForDoctorToFirestore,
   fetchDoctorDataFromFirestore,
   userNotifications,
   addNotificationToFirestore,
@@ -1047,9 +931,8 @@ export {
   updateAppointmentsFromFirestore,
   updateNotificationFromFirestore,
   updateCatProfile,
-  // createAnnouncement,
-  createAnnouncementAndNotifyUsers,
   deleteCatProfile,
-  deleteUserProfile
+  deleteUserProfile,
+  fetchApproveDocotorProfile
   // deleteCatProfile
 };

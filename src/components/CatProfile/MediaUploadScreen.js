@@ -143,7 +143,7 @@ const CatMediaUploadScreen = () => {
             }
             const user = auth().currentUser;
 
-            const user_id=user.id;
+            const user_id = user.uid;
 
             // Combine data from all slices
             const catProfileData = {
@@ -155,8 +155,9 @@ const CatMediaUploadScreen = () => {
                 user_id
 
             };
-       
-            console.log('media userid',user.uid)
+            console.log('catProfileData', catProfileData)
+
+            console.log(' userid', user.uid)
             // Add data to Firestore
             await addCatProfileToFirestore(user.uid, catProfileData);
 

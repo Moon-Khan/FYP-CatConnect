@@ -19,7 +19,7 @@ const DoctorLoginScreen = () => {
         try {
 
             if (!email || !password) {
-                Alert.alert('Please Fill all Fields');
+                Alert.alert('Please Enter Email Password');
                 return;
             }
 
@@ -41,7 +41,7 @@ const DoctorLoginScreen = () => {
 
             if (doctorSnapshot.exists) {
 
-                navigation.navigate('DoctorBasicInfo1');
+                navigation.navigate('DoctorHomeScreen');
             } else {
                 console.log('Doctor data not found');
             }
@@ -52,6 +52,7 @@ const DoctorLoginScreen = () => {
         }
     };
 
+    
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Login</Text>

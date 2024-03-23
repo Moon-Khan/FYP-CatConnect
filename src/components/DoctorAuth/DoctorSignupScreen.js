@@ -28,7 +28,7 @@ const DoctorSignup = () => {
     const handleEmailSignup = async () => {
         try {
             if (!email || !firstname || !password) {
-                Alert.alert('Please Fill all Fields');
+                Alert.alert('Please Enter Email and Password');
                 return;
             }
 
