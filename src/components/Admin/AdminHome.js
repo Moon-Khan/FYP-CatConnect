@@ -10,18 +10,50 @@ import {
 } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
+import auth from '@react-native-firebase/auth';
+import { fetchUserDataFromFirestore } from '../../Services/firebase';
 
 
 const AdminHome = () => {
 
   const navigation = useNavigation();
+  const user = auth().currentUser;
+  const [userData, setUserData] = useState({});
+
+
+  useEffect(() => {
+    const checkAuthentication = async () => {
+      try {
+        // Fetch user data
+        const userDoc = await fetchUserDataFromFirestore(user.uid);
+
+        if (userDoc.exists) {
+          console.log('userDoc.data())------------->', userDoc.data())
+          setUserData(userDoc.data());
+        } else {
+          console.log('User document does not exist in Firestore(home screen).');
+        }
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    };
+
+    checkAuthentication();
+  }, [user, navigation]);
+
 
   return (
     <ScrollView>
       <View style={styles.container}>
-        <Text style={styles.header}>Welcome Back</Text>
-        <Text style={styles.Username}>ADMIN</Text>
+        <View style={styles.menuContainer}>
 
+          <Text style={styles.greeting}>Welcome Back</Text>
+          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('AdminProfile')}>
+            <Image source={require('../../../assets/Catassets/profilehome.png')} style={{ width: 30, height: 30, marginTop:15, marginLeft:10}} />
+            <Text style={{color: '#9F9F9F', fontFamily: 'Poppins-SemiBold', fontSize: 12, marginLeft: 5}}>Profile</Text>
+          </TouchableOpacity>
+        </View>
+        <Text style={styles.greeting2}>{userData.firstname || ''} 👋</Text>
 
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.monitorbutton} onPress={() => navigation.navigate('MonitorUsers')}>
@@ -58,21 +90,31 @@ const styles = StyleSheet.create({
 
   container: {
     flex: 1,
-    padding: 15,
+    paddingLeft: 15,
+    paddingRight:15,
+    backgroundColor: '#ffff',
   },
-  header: {
-    fontSize: 16,
-    marginTop: 20,
-    fontFamily: 'Poppins-ExtraBoldItalic',
-    color: '#7E7E7E'
+  greeting: {
+    paddingTop: 35,
+    fontSize: 18,
+    fontFamily: 'Poppins-SemiBold',
+    color: '#212529',
+  
+  },
+  greeting2: {
+    fontSize: 28,
+    fontFamily: 'Poppins-Bold',
+    color: '#212529',
+    flex: 1,
+  },
+  menuContainer: {
+    flexDirection: 'row',
   },
 
-  Username: {
-    fontSize: 30,
-    marginBottom: 20,
-    fontFamily: 'Poppins-Italic',
-    color: '#212529'
+  menuItem: {
+    marginLeft: 200,
   },
+
 
   monitor: {
     position: 'absolute',
@@ -177,7 +219,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   buttonText: {
-    position:'absolute',
+    position: 'absolute',
     bottom: 20,
     color: '#fff',
     fontSize: 16,

@@ -7,7 +7,7 @@ import auth from '@react-native-firebase/auth';
 import { useNavigation } from '@react-navigation/native';
 import { fetchUserDataFromFirestore, updateUserDataInFirestore } from '../../Services/firebase';
 
-const UpdateUserScreen = () => {
+const AdminProfile = () => {
     const navigation = useNavigation();
     const dispatch = useDispatch();
     const [contact, setContact] = useState('');
@@ -57,7 +57,7 @@ const UpdateUserScreen = () => {
 
             await updateUserDataInFirestore(user.uid, '', firstname, password, '', lastname, contact, city, gender);
 
-            navigation.navigate('Home');
+            navigation.navigate('AdminHome');
             console.log('User updated successfully!');
         } catch (error) {
             console.log(error.message);
@@ -76,7 +76,7 @@ const UpdateUserScreen = () => {
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <Text style={styles.headerText}>Edit Profile</Text>
+                <Text style={styles.headerText}>Admin Edit Profile</Text>
             </View>
             <TextInput
                 style={[styles.input, styles.inputbox]}
@@ -166,7 +166,7 @@ const styles = StyleSheet.create({
         width: '90%',
         alignSelf: 'center',
         minHeight: 1,
-        marginTop: 10,
+        marginTop: 5,
     },
     button: {
         backgroundColor: '#47C1FF',
@@ -184,5 +184,5 @@ const styles = StyleSheet.create({
     },
 });
 
-export default UpdateUserScreen;
+export default AdminProfile;
 
