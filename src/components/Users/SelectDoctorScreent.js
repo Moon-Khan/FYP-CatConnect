@@ -111,9 +111,7 @@ const AppointmentHomeScreen = () => {
     />
   );
 
-  // const handleVirtualAssistant = () => {
-  //   navigation.navigate('VirtualAssistant');
-  // };
+
 
   if (loading) {
     return <ActivityIndicator />;
@@ -124,9 +122,7 @@ const AppointmentHomeScreen = () => {
 
     <View style={styles.container}>
 
-      {/* <TouchableOpacity style={styles.button} onPress={handleVirtualAssistant}>
-        <Text style={styles.buttonText}>Virtual Assistant</Text>
-      </TouchableOpacity> */}
+    
       <View style={styles.header1}>
         <Text style={styles.greeting}>Hello {userData.firstname || ''} 👋</Text>
         {/* <Image
