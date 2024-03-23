@@ -41,7 +41,7 @@ import CatProfileRecommendationScreen from './components/Recommendation/CatProfi
 import VideoCallScreen from './components/Chat/VideoCallScreen';
 import DoctorChatUsers from './components/Doctors/DoctorChatUsers';
 import DoctorChat from './components/Chat/DoctorChat';
-import VirtualAssistant from './components/Users/VirtualAssistant';
+// import VirtualAssistant from './components/Users/VirtualAssistant';
 
 
 
@@ -62,7 +62,7 @@ const App = () => (
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="DoctorHomeScreen" component={DoctorHomeScreen} />
         <Stack.Screen name="SelectDoctor" component={SelectDoctor} />
-        <Stack.Screen name="VirtualAssistant" component={VirtualAssistant} />
+        {/* <Stack.Screen name="VirtualAssistant" component={VirtualAssistant} /> */}
         
         <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
         <Stack.Screen name="CatScreen" component={CatScreen} />
