@@ -824,44 +824,59 @@ const HomeScreen = ({ navigation }) => {
 
   return (
     <View style={{ flex: 1 }}>
-
-      <ScrollView >
-        <View style={styles.container}>
-
-          <View style={styles.header1}>
-            <Text style={styles.greeting}>Hi {userData.firstname || ''} 👋</Text>
-          </View>
-          <View style={styles.header}>
-            <Text style={styles.greeting2}>Find the best breed for your cat </Text>
-          </View>
-          <View style={styles.searchContainer}>
-            <View style={styles.searchInputContainer}>
-              <Image
-                style={styles.searchIcon}
-                resizeMode="cover"
-                source={require("../../../assets/Catassets/search.png")}
-              />
-              <TextInput
-                placeholder="Search..."
-                placeholderTextColor="#9F9F9F"
-                onChangeText={handleSearch}
-                value={searchText}
-                style={styles.searchInput}
-              />
-              <Image
-                style={styles.filtericon}
-                resizeMode="cover"
-                source={require("../../../assets/Catassets/filter.png")}
-              />
+      <FlatList
+        data={[{ key: 'content' }]}
+        renderItem={() => (
+          <View style={styles.container}>
+            <View style={styles.header1}>
+              <Text style={styles.greeting}>Hi {userData.firstname || ''} 👋</Text>
             </View>
-          </View>
+            <View style={styles.header}>
+              <Text style={styles.greeting2}>Find the best breed for your cat </Text>
+            </View>
+            <View style={styles.searchContainer}>
+              <View style={styles.searchInputContainer}>
+                <Image
+                  style={styles.searchIcon}
+                  resizeMode="cover"
+                  source={require("../../../assets/Catassets/search.png")}
+                />
+                <TextInput
+                  placeholder="Search..."
+                  placeholderTextColor="#9F9F9F"
+                  onChangeText={handleSearch}
+                  value={searchText}
+                  style={styles.searchInput}
+                />
+                <Image
+                  style={styles.filtericon}
+                  resizeMode="cover"
+                  source={require("../../../assets/Catassets/filter.png")}
+                />
+              </View>
+            </View>
 
-          <TouchableOpacity style={styles.notifibutton} onPress={handleNotificationPress}>
-            <Image
-              style={styles.NotificationIcon}
-              resizeMode="cover"
-              source={require("../../../assets/Catassets/alarm.png")}
+            <TouchableOpacity style={styles.notifibutton} onPress={handleNotificationPress}>
+              <Image
+                style={styles.NotificationIcon}
+                resizeMode="cover"
+                source={require("../../../assets/Catassets/alarm.png")}
+              />
+              {hasUnreadNotifications && <View style={styles.unreadDot} />}
+              {haReadNotifications && <View style={styles.readDot} />}
+            </TouchableOpacity>
+
+            <Advertisement />
+
+            <Text style={styles.feedText}>Feed</Text>
+            <FlatList
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              data={searchText.trim() !== '' ? filteredCatProfiles : catProfiles}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={({ item }) => renderPetCard(item)}
             />
+
             {hasUnreadNotifications && <View style={styles.unreadDot} />}
             {haReadNotifications && <View style={styles.readDot} />}
           </TouchableOpacity>
@@ -888,31 +903,26 @@ const HomeScreen = ({ navigation }) => {
           
         </View>
       </ScrollView>
+
       <View style={styles.bottomMenu}>
         <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Home')}>
-
           <Image source={require('../../../assets/Catassets/home-2.png')} style={{ width: 24, height: 24 }} />
           <Text style={{ ...styles.menuText, color: '#47C1FF' }}>Home</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('SelectDoctor')}>
           <Image source={require('../../../assets/Catassets/maki_doctor.png')} style={{ width: 24, height: 27 }} />
-
           <Text style={{ ...styles.menuText, color: '#9F9F9F' }}>Doctor</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('ChatUsers')}>
           <Image source={require('../../../assets/Catassets/chat.png')} style={{ width: 24, height: 24 }} />
-
           <Text style={{ ...styles.menuText, color: '#9F9F9F' }}>Chat</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('ProfileScreen')}>
           <Image source={require('../../../assets/Catassets/profilehome.png')} style={{ width: 24, height: 27 }} />
-
           <Text style={{ ...styles.menuText, color: '#9F9F9F' }}>Profile</Text>
         </TouchableOpacity>
       </View>
     </View>
-
-
   );
 };
 

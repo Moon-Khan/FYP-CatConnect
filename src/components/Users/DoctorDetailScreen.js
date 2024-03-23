@@ -109,6 +109,15 @@ const DoctorDetailScreen = ({ route }) => {
         }
     };
 
+    const handleChat = () => {
+        if (doctorData) {
+            // Navigate to the chat screen passing the doctor's ID
+
+            navigation.navigate('DoctorChat', { doctorId: doctorData.id });
+            console.log("userID------>", doctorData.id)
+        }
+    };
+
     if (!doctorData) {
         return (
             <View style={styles.container}>
@@ -209,12 +218,20 @@ const DoctorDetailScreen = ({ route }) => {
                 ) : (
                     <Text style={{ marginTop: 5, fontSize: 12, fontFamily: 'Poppins-SemiBold' }} >OOPS! No slots Available</Text>
                 )}
-            </View>
 
-            <TouchableOpacity style={styles.button} onPress={handleBookAppointment}>
-                <Text style={styles.buttonText}>Book Appointment</Text>
+
+
+                <TouchableOpacity style={styles.button} onPress={handleBookAppointment}>
+                    <Text style={styles.buttonText}>Book Appointment</Text>
+                </TouchableOpacity>
+
+                
+            </View>
+            <TouchableOpacity style={[styles.button, styles.chatButton]} onPress={handleChat}>
+                <Text style={styles.buttonText}>Chat with Doctor</Text>
             </TouchableOpacity>
-        </View >
+        </ScrollView>
+
     );
 };
 
@@ -450,6 +467,14 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: 'bold',
         color: 'white',
+    },
+    chatButton: {
+        backgroundColor: '#fff',
+        marginTop: 40,
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: '#fff',
+        paddingVertical: 10,
     },
 });
 

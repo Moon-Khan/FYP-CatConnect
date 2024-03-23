@@ -385,7 +385,6 @@ import { useNavigation } from '@react-navigation/native';
 const UserChat = ({ route }) => {
     const navigation = useNavigation();
     const { catProfileId, userId } = route.params;
-
     const currentUser = auth().currentUser;
     const [messages, setMessages] = useState([]);
     const [recipientName, setRecipientName] = useState('');
