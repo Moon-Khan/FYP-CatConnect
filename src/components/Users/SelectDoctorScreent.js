@@ -111,6 +111,10 @@ const AppointmentHomeScreen = () => {
     />
   );
 
+  const handleVirtualAssistant = () => {
+    navigation.navigate('VirtualAssistant');
+  };
+
   if (loading) {
     return <ActivityIndicator />;
   }
@@ -120,6 +124,9 @@ const AppointmentHomeScreen = () => {
 
     <View style={styles.container}>
 
+      <TouchableOpacity style={styles.button} onPress={handleVirtualAssistant}>
+        <Text style={styles.buttonText}>Virtual Assistant</Text>
+      </TouchableOpacity>
       <View style={styles.header1}>
         <Text style={styles.greeting}>Hello {userData.firstname || ''} 👋</Text>
         {/* <Image
@@ -191,6 +198,20 @@ const styles = StyleSheet.create({
     color: '#212529',
     flex: 1,
     flexDirection: 'row',
+  },
+  button: {
+    backgroundColor: '#fff',
+    padding: 10,
+    borderRadius: 26,
+    marginTop: 15,
+    width: '70%',
+    alignItems: 'center',
+    alignSelf: 'center',
+  },
+  buttonText: {
+    fontSize: 18,
+    color: '#47C1FF',
+    fontFamily: 'Poppins-SemiBold',
   },
   searchInputContainer: {
     flexDirection: 'row',

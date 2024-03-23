@@ -415,6 +415,15 @@ const DoctorDetailScreen = ({ route }) => {
         }
     };
 
+    const handleChat = () => {
+        if (doctorData) {
+            // Navigate to the chat screen passing the doctor's ID
+
+            navigation.navigate('DoctorChat', { doctorId: doctorData.id });
+            console.log("userID------>", doctorData.id)
+        }
+    };
+
     if (!doctorData) {
         return (
             <View style={styles.container}>
@@ -492,7 +501,12 @@ const DoctorDetailScreen = ({ route }) => {
                 <TouchableOpacity style={styles.button} onPress={handleBookAppointment}>
                     <Text style={styles.buttonText}>Book Appointment</Text>
                 </TouchableOpacity>
+
+                
             </View>
+            <TouchableOpacity style={[styles.button, styles.chatButton]} onPress={handleChat}>
+                <Text style={styles.buttonText}>Chat with Doctor</Text>
+            </TouchableOpacity>
         </ScrollView>
     );
 };
@@ -569,6 +583,14 @@ const styles = StyleSheet.create({
     },
     slotText: {
         color: '#fff',
+    },
+    chatButton: {
+        backgroundColor: '#fff',
+        marginTop: 40,
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: '#fff',
+        paddingVertical: 10,
     },
 });
 
