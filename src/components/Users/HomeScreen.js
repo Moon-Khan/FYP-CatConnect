@@ -876,14 +876,34 @@ const HomeScreen = ({ navigation }) => {
               keyExtractor={(item, index) => index.toString()}
               renderItem={({ item }) => renderPetCard(item)}
             />
-            <Text style={styles.feedText}>Recommended</Text>
-            <CatProfileRecommendationScreen />
 
-          </View>
-        )}
-        keyExtractor={(item) => item.key}
-      />
-      {/* Your existing bottom menu */}
+            {hasUnreadNotifications && <View style={styles.unreadDot} />}
+            {haReadNotifications && <View style={styles.readDot} />}
+          </TouchableOpacity>
+
+          <Advertisement />
+
+          <Text style={styles.feedText}>Feed</Text>
+          <FlatList
+            data={[{ key: 'horizontalList' }]}
+            renderItem={() => (
+              <FlatList
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                data={searchText.trim() !== '' ? filteredCatProfiles : catProfiles}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({ item }) => renderPetCard(item)}
+              />
+            )}
+            keyExtractor={(item) => item.key}
+          />
+          
+          <Text style={styles.feedText}>Recommended</Text>
+          <CatProfileRecommendationScreen />
+          
+        </View>
+      </ScrollView>
+
       <View style={styles.bottomMenu}>
         <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Home')}>
           <Image source={require('../../../assets/Catassets/home-2.png')} style={{ width: 24, height: 24 }} />

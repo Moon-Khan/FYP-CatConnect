@@ -39,11 +39,15 @@ import UserCatDetails from './components/Admin/UserCatDetail';
 import ApproveProfile from './components/Admin/ApproveProfile';
 import CatProfileRecommendationScreen from './components/Recommendation/CatProfileRecommendationScreen';
 import VideoCallScreen from './components/Chat/VideoCallScreen';
+
 import DoctorChatUsers from './components/Doctors/DoctorChatUsers';
 import DoctorChat from './components/Chat/DoctorChat';
 
 
 
+
+
+import AdminProfile from './components/Admin/AdminProfileScreen'
 
 
 const Stack = createStackNavigator();
@@ -52,6 +56,8 @@ const App = () => (
   <Provider store={store}>
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Splashscreen">
+
+
 
         <Stack.Screen name="Splashscreen" component={Splashscreen} />
         <Stack.Screen name="Signup" component={SignupScreen} />
@@ -89,10 +95,15 @@ const App = () => (
         <Stack.Screen name="ApproveProfile" component={ApproveProfile} />
         <Stack.Screen name="CatProfileRecommendationScreen" component={CatProfileRecommendationScreen} />
         <Stack.Screen name="VideoCallScreen" component={VideoCallScreen} />
+
         <Stack.Screen name="DoctorChatUsers" component={DoctorChatUsers} />
         <Stack.Screen name="DoctorChat" component={DoctorChat} />
         
         
+
+        <Stack.Screen name="AdminProfile" component={AdminProfile} />
+
+
       </Stack.Navigator>
     </NavigationContainer>
   </Provider>

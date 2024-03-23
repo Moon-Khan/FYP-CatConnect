@@ -10,31 +10,72 @@ import {
 } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
+import auth from '@react-native-firebase/auth';
+import { fetchUserDataFromFirestore } from '../../Services/firebase';
 
 
 const AdminHome = () => {
 
   const navigation = useNavigation();
+  const user = auth().currentUser;
+  const [userData, setUserData] = useState({});
+
+
+  useEffect(() => {
+    const checkAuthentication = async () => {
+      try {
+        // Fetch user data
+        const userDoc = await fetchUserDataFromFirestore(user.uid);
+
+        if (userDoc.exists) {
+          console.log('userDoc.data())------------->', userDoc.data())
+          setUserData(userDoc.data());
+        } else {
+          console.log('User document does not exist in Firestore(home screen).');
+        }
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    };
+
+    checkAuthentication();
+  }, [user, navigation]);
+
 
   return (
     <ScrollView>
       <View style={styles.container}>
-        <Text style={styles.header}>Welcome to the App Admin</Text>
-        
+        <View style={styles.menuContainer}>
+
+          <Text style={styles.greeting}>Welcome Back</Text>
+          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('AdminProfile')}>
+            <Image source={require('../../../assets/Catassets/profilehome.png')} style={{ width: 30, height: 30, marginTop:15, marginLeft:10}} />
+            <Text style={{color: '#9F9F9F', fontFamily: 'Poppins-SemiBold', fontSize: 12, marginLeft: 5}}>Profile</Text>
+          </TouchableOpacity>
+        </View>
+        <Text style={styles.greeting2}>{userData.firstname || ''} 👋</Text>
+
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.monitorbutton} onPress={() => navigation.navigate('MonitorUsers')}>
-            <Text style={styles.buttonText}>Monitor Users Profile</Text>
+            <Image source={require('../../../assets/Catassets/monitor.png')} style={styles.monitor} />
+            <Text style={styles.buttonText}>Monitor </Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.approvebutton} onPress={() => navigation.navigate('ApproveCatProfiles')}>
-            <Text style={styles.buttonText}>Approve Cat/Doctor Profiles</Text>
+          <TouchableOpacity style={styles.approvebutton} onPress={() => navigation.navigate('ApproveProfile')}>
+            <Image source={require('../../../assets/Catassets/approve.png')} style={styles.approve} />
+
+            <Text style={styles.buttonText}>Profile Requests</Text>
           </TouchableOpacity>
         </View>
 
         <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.announcementbutton} onPress={() => navigation.navigate('MakeAnnouncements')}>
-            <Text style={styles.buttonText}>Make Announcements</Text>
+          <TouchableOpacity style={styles.announcementbutton} onPress={() => navigation.navigate('AllAnnouncements')}>
+            <Image source={require('../../../assets/Catassets/anouncemenet.png')} style={styles.announcement} />
+
+            <Text style={styles.buttonText}>Announcements</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.supportbutton} onPress={() => navigation.navigate('SupportFeedback')}>
+            <Image source={require('../../../assets/Catassets/supportfeedback.png')} style={styles.support} />
+
             <Text style={styles.buttonText}>Support and Feedback</Text>
           </TouchableOpacity>
         </View>
@@ -49,95 +90,137 @@ const styles = StyleSheet.create({
 
   container: {
     flex: 1,
+    paddingLeft: 15,
+    paddingRight:15,
+    backgroundColor: '#ffff',
+  },
+  greeting: {
+    paddingTop: 35,
+    fontSize: 18,
+    fontFamily: 'Poppins-SemiBold',
+    color: '#212529',
   
   },
-  header: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginTop: 30,
-    marginBottom: 20,
-    fontFamily: 'Poppins-SemiBold',
-    color:'#212529'
+  greeting2: {
+    fontSize: 28,
+    fontFamily: 'Poppins-Bold',
+    color: '#212529',
+    flex: 1,
   },
+  menuContainer: {
+    flexDirection: 'row',
+  },
+
+  menuItem: {
+    marginLeft: 200,
+  },
+
+
+  monitor: {
+    position: 'absolute',
+    top: 10,
+    left: 15,
+    width: 50,
+    height: 50,
+  },
+  approve: {
+    position: 'absolute',
+    top: 10,
+    left: 15,
+    width: 50,
+    height: 50,
+  },
+  announcement: {
+    position: 'absolute',
+    top: 10,
+    left: 15,
+    width: 50,
+    height: 50,
+  },
+  support: {
+    position: 'absolute',
+    top: 10,
+    left: 15,
+    width: 50,
+    height: 50,
+  },
+
   buttonContainer: {
     flexDirection: 'row',
-    justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 50,
+    marginTop: 10,
+    marginRight: 10,
   },
   monitorbutton: {
-    backgroundColor: '#47C1FF',
-    paddingVertical: 40,
-    paddingHorizontal: 20,
-    marginHorizontal: 10,
-    borderRadius: 5,
-    justifyContent: 'center',
+    backgroundColor: '#97cc5f',
+    paddingVertical: 65,
+    borderRadius: 20,
     alignItems: 'center',
-    width: '40%',
+    width: '50%',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 6,
     },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
+    shadowOpacity: 0.255,
+    shadowRadius: 4.84,
     elevation: 5,
   },
   approvebutton: {
-    backgroundColor: '#47C1FF',
-    paddingVertical: 40,
-    paddingHorizontal: 20,
-    marginHorizontal: 10,
-    borderRadius: 5,
-    justifyContent: 'center',
+    backgroundColor: '#ea5262',
+    paddingVertical: 65,
+    borderRadius: 20,
+    marginLeft: 10,
     alignItems: 'center',
-    width: '40%',
+    width: '50%',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 6,
     },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
+    shadowOpacity: 0.255,
+    shadowRadius: 4.84,
+    elevation: 5,
     elevation: 5,
   },
   announcementbutton: {
-    backgroundColor: '#47C1FF',
-    paddingVertical: 40,
-    paddingHorizontal: 20,
-    marginHorizontal: 10,
-    borderRadius: 5,
-    justifyContent: 'center',
+    backgroundColor: '#fdca51',
+    marginTop: 10,
+    paddingVertical: 65,
+    borderRadius: 20,
     alignItems: 'center',
-    width: '40%',
+    width: '50%',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 6,
     },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
+    shadowOpacity: 0.255,
+    shadowRadius: 4.84,
+    elevation: 5,
     elevation: 5,
   },
   supportbutton: {
-    backgroundColor: '#47C1FF',
-    paddingVertical: 40,
-    paddingHorizontal: 30,
-    marginHorizontal: 10,
-    borderRadius: 5,
-    justifyContent: 'center',
+    backgroundColor: '#5998e8',
+    marginTop: 10,
+    paddingVertical: 65,
+    borderRadius: 20,
+    marginLeft: 10,
+
     alignItems: 'center',
-    width: '40%',
+    width: '50%',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 6,
     },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
+    shadowOpacity: 0.255,
+    shadowRadius: 4.84,
     elevation: 5,
   },
   buttonText: {
+    position: 'absolute',
+    bottom: 20,
     color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',

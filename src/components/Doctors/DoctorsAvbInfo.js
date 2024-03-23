@@ -267,10 +267,9 @@ import {
     TouchableOpacity,
     StyleSheet,
     ScrollView,
-    Alert,
 } from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
-import { updateDoctorDataInFirestore } from '../../Services/firebase'; // Import the updated Firebase function
+import { updateDoctorDataInFirestore, approveDoctorProfile } from '../../Services/firebase'; // Import the updated Firebase function
 import auth from '@react-native-firebase/auth';
 import { useNavigation } from '@react-navigation/native';
 
@@ -287,7 +286,7 @@ const DoctorAvailabilityScreen = ({ route }) => { // Receive route prop
     });
 
     // Receive basic information from props
-    const { specialization, qualification, contactNumber, city } = route.params;
+    const { name, specialization, qualification, experience, contactNumber, city } = route.params;
 
     const [selectedDay, setSelectedDay] = useState('');
     const [selectedSlotIndex, setSelectedSlotIndex] = useState(null);
@@ -326,15 +325,19 @@ const DoctorAvailabilityScreen = ({ route }) => { // Receive route prop
     const handleSaveAvailability = async () => {
         console.log('Availability:', availability);
         try {
+            const doctorid = user.uid;
+
             // Combine availability data with basic information
             const doctorData = {
-
+                doctorid,
+                name,
                 specialization,
                 qualification,
+                experience,
                 contactNumber,
                 availability,
                 city,
-                status:'pending'
+                status: 'pending',
             };
             // Update doctor's data in Firestore
             await updateDoctorDataInFirestore(user.uid, doctorData);
@@ -384,41 +387,39 @@ const DoctorAvailabilityScreen = ({ route }) => { // Receive route prop
         handleTimeChange(selectedDay, selectedSlotIndex, 'endTime', selectedTime);
         hideEndTimePicker();
     };
-
-    // Render component
     return (
         <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
             <Text style={styles.title}>Set Availability</Text>
 
-            {/* Render each day with its respective time slots */}
             {Object.keys(availability).map((day) => (
                 <View key={day} style={styles.dayContainer}>
-                    <Text style={styles.dayText}>{day}</Text>
+                    <View style={styles.dayHeader}>
+                        <Text style={styles.dayText}>{day}</Text>
+                        <TouchableOpacity onPress={() => handleAddTimeSlot(day)}>
+                            <Text style={styles.addSlotButton}>Add Time Slot</Text>
+                        </TouchableOpacity>
+                    </View>
 
-                    {/* Render time slots for the current day */}
-                    {availability[day].map((slot, index) => (
-                        <View key={index} style={styles.timeSlotContainer}>
-                            <Text>Time Slot {index + 1}:</Text>
-                            <View style={styles.timeSlotInputs}>
-                                {/* Start Time Picker */}
-                                <TouchableOpacity onPress={() => showStartTimePicker(day, index)}>
-                                    <Text style={styles.timeText}>{slot.startTime ? slot.startTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Select Start Time'}</Text>
-                                </TouchableOpacity>
-                                {/* End Time Picker */}
-                                <TouchableOpacity onPress={() => showEndTimePicker(day, index)}>
-                                    <Text style={styles.timeText}>{slot.endTime ? slot.endTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Select End Time'}</Text>
+                    <View style={styles.timeSlotsContainer}>
+                        {availability[day].map((slot, index) => (
+                            <View key={index} style={styles.timeSlotContainer}>
+                                <Text style={styles.TimeslotText}>Time Slot {index + 1}:</Text>
+                                <View style={styles.timeSlotInputs}>
+                                    {/* Start Time Picker */}
+                                    <TouchableOpacity onPress={() => showStartTimePicker(day, index)}>
+                                        <Text style={styles.timeText}>{slot.startTime ? slot.startTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Select Start Time'}</Text>
+                                    </TouchableOpacity>
+                                    {/* End Time Picker */}
+                                    <TouchableOpacity onPress={() => showEndTimePicker(day, index)}>
+                                        <Text style={styles.timeText}>{slot.endTime ? slot.endTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Select End Time'}</Text>
+                                    </TouchableOpacity>
+                                </View>
+                                <TouchableOpacity onPress={() => handleRemoveTimeSlot(day, index)}>
+                                    <Text style={styles.removeSlotButton}>Remove</Text>
                                 </TouchableOpacity>
                             </View>
-                            <TouchableOpacity onPress={() => handleRemoveTimeSlot(day, index)}>
-                                <Text style={styles.removeSlotButton}>Remove</Text>
-                            </TouchableOpacity>
-                        </View>
-                    ))}
-
-                    {/* Button to add a new time slot */}
-                    <TouchableOpacity onPress={() => handleAddTimeSlot(day)}>
-                        <Text style={styles.addSlotButton}>Add Time Slot</Text>
-                    </TouchableOpacity>
+                        ))}
+                    </View>
                 </View>
             ))}
 
@@ -441,10 +442,10 @@ const DoctorAvailabilityScreen = ({ route }) => { // Receive route prop
                 <Text style={styles.buttonText}>Save Availability</Text>
             </TouchableOpacity>
         </ScrollView>
-    );
+    )
 };
 
-// Styles
+
 const styles = StyleSheet.create({
     container: {
         flexGrow: 1,
@@ -463,13 +464,32 @@ const styles = StyleSheet.create({
     dayContainer: {
         marginBottom: 20,
     },
+    dayHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between', // Align items horizontally
+        alignItems: 'center',
+        marginBottom: 10,
+    },
     dayText: {
         fontSize: 20,
-        marginBottom: 10,
         fontFamily: 'Poppins-SemiBold',
-        color: '#47C1FF',
+        color: '#212529',
+    },
+    TimeslotText: {
+        fontSize: 14,
+        fontFamily: 'Poppins-SemiBold',
+        color: '#212529',
+    },
+
+    timeSlotsContainer: {
+        flexDirection: 'row', // Display time slots horizontally
+        flexWrap: 'wrap', // Allow wrapping of time slots to next line if needed
+
     },
     timeSlotContainer: {
+        flexDirection: 'row', // Display time slots horizontally
+        flexWrap: 'wrap', // Allow wrapping of time slots to next line if needed
+        marginRight: 10,
         marginBottom: 10,
     },
     timeSlotInputs: {
@@ -477,22 +497,26 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     timeText: {
-        flex: 1,
-        marginRight: 10,
+        color: '#212529',
+        marginRight: 5,
+        marginLeft: 5,
         height: 40,
         borderWidth: 1,
-        borderColor: '#ccc',
+        borderColor: '#212529',
         paddingHorizontal: 10,
         textAlignVertical: 'center',
     },
     addSlotButton: {
         color: '#47C1FF',
         textDecorationLine: 'underline',
+        marginBottom: 10,
+        marginLeft: 40,
     },
     removeSlotButton: {
         color: 'red',
         textDecorationLine: 'underline',
         marginTop: 5,
+        marginLeft: 290,
     },
     saveButton: {
         backgroundColor: '#47C1FF',
@@ -509,5 +533,5 @@ const styles = StyleSheet.create({
     },
 });
 
-// Export the DoctorAvailabilityScreen component
+
 export default DoctorAvailabilityScreen;

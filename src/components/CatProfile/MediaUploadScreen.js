@@ -142,7 +142,8 @@ const CatMediaUploadScreen = () => {
                 return;
             }
             const user = auth().currentUser;
-            const user_id=user.id;
+
+            const user_id = user.uid;
 
             // Combine data from all slices
             const catProfileData = {
@@ -151,10 +152,12 @@ const CatMediaUploadScreen = () => {
                 personalityAndAvailability,
                 mediaUpload,
                 status: 'pending',
-                user_id,
+                user_id
 
             };
-            console.log('media userid',user.uid)
+            console.log('catProfileData', catProfileData)
+
+            console.log(' userid', user.uid)
             // Add data to Firestore
             await addCatProfileToFirestore(user.uid, catProfileData);
 
@@ -227,7 +230,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 16,
-  
+
     },
     title: {
         fontSize: 24,

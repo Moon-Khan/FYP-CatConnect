@@ -1717,15 +1717,15 @@ const CatProfileRecommendationScreen = () => {
                     )}
                 </View>
                 <View style={styles.cardContent}>
-                    <Text style={styles.petName}>{basicInfo.catName}</Text>
-                    <Text style={styles.breed}>{basicInfo.breed}</Text>
+                    <Text style={styles.breedName}>{basicInfo.breed}</Text>
                     <Text style={styles.available}>{personalityAndAvailability.availabilityStatus}</Text>
+                    <Text style={styles.catName}>{basicInfo.catName}</Text>
                     <Text style={styles.similarity}>Similarity: {similarityPercentage}%</Text>
-                    <Image
-                        style={styles.hearticon}
+                    {/* <Image
+                        style={styles.shareIcon}
                         resizeMode="cover"
-                        source={require("../../../assets/Catassets/hearts.png")}
-                    />
+                        source={require("../../../assets/Catassets/share.png")}
+                    /> */}
                 </View>
             </TouchableOpacity>
         );
@@ -1736,54 +1736,130 @@ const CatProfileRecommendationScreen = () => {
 
     return (
         <FlatList
+            horizontal
+            showsHorizontalScrollIndicator={false}
             data={sortedRecommendedCats}
             keyExtractor={(item, index) => index.toString()}
             renderItem={renderPetCard}
         />
+        // <FlatList
+        //     horizontal
+        //     showsHorizontalScrollIndicator={false}
+        //     data={sortedRecommendedCats}
+        //     keyExtractor={(item, index) => index.toString()}
+        //     renderItem={renderPetCard}                // <View style={{ marginRight: 10 }}>
+        // //     {renderPetCard(item)}
+        // // </View>
+        // // )}
+        // />
+
+
     );
 };
 
 const styles = StyleSheet.create({
-    petCard: {
-        display: 'flex',
-        flexDirection: 'row',
-        backgroundColor: '#fff',
-        padding: 15,
-        paddingLeft: 20,
-        borderRadius: 8,
-        margin: 12,
-        marginLeft: 0,
-        marginBottom: 2,
-        width: '100%',
+    cardContent: {
+        flexDirection: 'column',
+        marginLeft: 10,
     },
+   
+    petCard: {
+        width: 135,
+        marginRight: 10,
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 20,
+        paddingBottom: 10,
+        fontWeight: 'bold',
+        fontFamily: 'Poppins-SemiBold',
+        color: '#7E7E7E',
+
+    },
+
     imageContainer: {
-        marginRight: 15,
+        alignItems: 'center',
+        marginBottom: 10,
     },
     thumbnailImage: {
-        width: 90,
+        width: '100%',
         height: 100,
-        borderRadius: 5,
+        borderTopRightRadius: 20,
+        borderTopLeftRadius: 20,
     },
-    petName: {
-        fontSize: 16,
-        marginBottom: 1,
-        color: '#212529',
+
+    catName: {
+        flexDirection: 'row', // Arrange items horizontally
+        fontSize: 12,
+        fontWeight: 'bold',
+        textAlign: 'right',
         fontFamily: 'Poppins-SemiBold',
-    },
-    breed: {
-        fontSize: 14,
         color: '#7E7E7E',
-        marginBottom: 1,
-        fontFamily: 'Poppins-Medium',
+        paddingHorizontal: 10,
+        marginTop: -15,
+
+    },
+    breedName: {
+        fontSize: 12,
+        fontWeight: 'bold',
+        textAlign: 'left',
+        marginBottom: 5,
+        fontFamily: 'Poppins-SemiBold',
+        backgroundColor: '#212529',
+        color: '#fff',
+        paddingHorizontal: 12,
+        paddingVertical: 5,
+        borderRadius: 20,
+        width: '55%',
     },
     available: {
-        fontSize: 14,
-        color: '#7E7E7E',
-        marginBottom: 1,
+        fontSize: 12,
+        fontWeight: 'bold',
+        textAlign: 'left',
+        marginLeft: 5,
         fontFamily: 'Poppins-SemiBold',
+        color: '#212529',
     },
+
+    // petCard: {
+    //     display: 'flex',
+    //     flexDirection: 'row',
+    //     backgroundColor: '#fff',
+    //     padding: 15,
+    //     paddingLeft: 20,
+    //     borderRadius: 8,
+    //     margin: 12,
+    //     marginLeft: 0,
+    //     marginBottom: 2,
+    //     width: '100%',
+    // },
+    // imageContainer: {
+    //     marginRight: 15,
+    // },
+    // thumbnailImage: {
+    //     width: 90,
+    //     height: 100,
+    //     borderRadius: 5,
+    // },
+    // petName: {
+    //     fontSize: 16,
+    //     marginBottom: 1,
+    //     color: '#212529',
+    //     fontFamily: 'Poppins-SemiBold',
+    // },
+    // breed: {
+    //     fontSize: 14,
+    //     color: '#7E7E7E',
+    //     marginBottom: 1,
+    //     fontFamily: 'Poppins-Medium',
+    // },
+    // available: {
+    //     fontSize: 14,
+    //     color: '#7E7E7E',
+    //     marginBottom: 1,
+    //     fontFamily: 'Poppins-SemiBold',
+    // },
     similarity: {
-        fontSize: 14,
+        fontSize: 12,
         color: '#555',
         fontFamily: 'Poppins-Regular',
     },

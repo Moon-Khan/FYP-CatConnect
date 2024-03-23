@@ -1,0 +1,153 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "assets/fonts/Poppins/OFL.txt",
+      "sha1": "8d6c34b70e3d638c82d7b5aba3f847f7d6d2c831"
+    },
+    {
+      "path": "assets/fonts/Poppins/Poppins-Black.ttf",
+      "sha1": "645e04c53c6b5b35bce654a811ebce16af8aa721"
+    },
+    {
+      "path": "assets/fonts/Poppins/Poppins-BlackItalic.ttf",
+      "sha1": "be4ef2aac7775a4b0179c0ecfce6cea8f7783f63"
+    },
+    {
+      "path": "assets/fonts/Poppins/Poppins-Bold.ttf",
+      "sha1": "875cf0cecd647bcf22e79d633d868c1b1ec98dfa"
+    },
+    {
+      "path": "assets/fonts/Poppins/Poppins-BoldItalic.ttf",
+      "sha1": "6de8952ca08d27ee77f57347d2cef4b4e26aa78f"
+    },
+    {
+      "path": "assets/fonts/Poppins/Poppins-ExtraBold.ttf",
+      "sha1": "4b5c0750f073abd576413a0898d3b95adaf199c8"
+    },
+    {
+      "path": "assets/fonts/Poppins/Poppins-ExtraBoldItalic.ttf",
+      "sha1": "94d3ee3acdbd00e37a715a25f2b5237666b5b8a3"
+    },
+    {
+      "path": "assets/fonts/Poppins/Poppins-ExtraLight.ttf",
+      "sha1": "85af6582a7e6155917c605f9d3fed68c02b23b06"
+    },
+    {
+      "path": "assets/fonts/Poppins/Poppins-ExtraLightItalic.ttf",
+      "sha1": "6fa0418f91032680d2d8fe4843009f2c80faa61d"
+    },
+    {
+      "path": "assets/fonts/Poppins/Poppins-Italic.ttf",
+      "sha1": "e2bfcd56016c3c915221ef1c5fc1a17b0776eb91"
+    },
+    {
+      "path": "assets/fonts/Poppins/Poppins-Light.ttf",
+      "sha1": "e247a92158e112f8bf7b638c8d95381d66b00dbb"
+    },
+    {
+      "path": "assets/fonts/Poppins/Poppins-LightItalic.ttf",
+      "sha1": "f76102b361e705751a83b7b22fe954daf1f27dd4"
+    },
+    {
+      "path": "assets/fonts/Poppins/Poppins-Medium.ttf",
+      "sha1": "283f21b44efbdbf276ba802be2d949a36bbc4233"
+    },
+    {
+      "path": "assets/fonts/Poppins/Poppins-MediumItalic.ttf",
+      "sha1": "b592c62fdf88c40cfd0f031bba6423b1d4430472"
+    },
+    {
+      "path": "assets/fonts/Poppins/Poppins-Regular.ttf",
+      "sha1": "fdd3002e7d814ee47c1c1b8487c72c6bbb3a2d00"
+    },
+    {
+      "path": "assets/fonts/Poppins/Poppins-SemiBold.ttf",
+      "sha1": "8a4ace9392d06bcb7f8ea2f5169b07e4c383a90d"
+    },
+    {
+      "path": "assets/fonts/Poppins/Poppins-Thin.ttf",
+      "sha1": "09ba4dcd5509c8085bf88c665dcc51cbdfced27b"
+    },
+    {
+      "path": "assets/fonts/Poppins/Poppins-ThinItalic.ttf",
+      "sha1": "fb8fccca21550e71135f92bbaf8a2e8a12c90465"
+    },
+    {
+      "path": "assets/fonts/Poppins/PoppinsSemiBoldItalic.ttf",
+      "sha1": "0c8bed0a5942b2388d36b11c115685d9f01700b0"
+    },
+    {
+      "path": "assets/fonts/Tomato_Grotesk/TomatoGrotesk-Black.otf",
+      "sha1": "b0fe4df89f526375b5c357cbf2cca3e9c13b2a23"
+    },
+    {
+      "path": "assets/fonts/Tomato_Grotesk/TomatoGrotesk-BlackSlanted.otf",
+      "sha1": "6d9ae04dccd2856f7a39ee23f58598ed8d7d7ce6"
+    },
+    {
+      "path": "assets/fonts/Tomato_Grotesk/TomatoGrotesk-Bold.otf",
+      "sha1": "6ee534b1da02e8f3385715f656f1f324aee97cd8"
+    },
+    {
+      "path": "assets/fonts/Tomato_Grotesk/TomatoGrotesk-BoldSlanted.otf",
+      "sha1": "378d038d91e07228cdbcaee3603658317ce8031d"
+    },
+    {
+      "path": "assets/fonts/Tomato_Grotesk/TomatoGrotesk-ExtraBold.otf",
+      "sha1": "beef85dc1f93f9b4b42505b9bc26a35b90643c88"
+    },
+    {
+      "path": "assets/fonts/Tomato_Grotesk/TomatoGrotesk-ExtraBoldSlanted.otf",
+      "sha1": "8181fe54fba797c033f90ef85a691c605f25064d"
+    },
+    {
+      "path": "assets/fonts/Tomato_Grotesk/TomatoGrotesk-ExtraLight.otf",
+      "sha1": "3054d7896a8e4a3f7b9a6f1332ba07a8a505f3a9"
+    },
+    {
+      "path": "assets/fonts/Tomato_Grotesk/TomatoGrotesk-ExtraLightSlanted.otf",
+      "sha1": "8aff4babd6a63b8d9adabdd63416f180e7eaaba4"
+    },
+    {
+      "path": "assets/fonts/Tomato_Grotesk/TomatoGrotesk-Light.otf",
+      "sha1": "d064c04da59d6fb64ebbb37870c8954929683e17"
+    },
+    {
+      "path": "assets/fonts/Tomato_Grotesk/TomatoGrotesk-LightSlanted.otf",
+      "sha1": "e4451be2b3646b131838c77578e6ad50882dd129"
+    },
+    {
+      "path": "assets/fonts/Tomato_Grotesk/TomatoGrotesk-Medium.otf",
+      "sha1": "bbdb2de1437f261d6b7b540c4588fac0e925be03"
+    },
+    {
+      "path": "assets/fonts/Tomato_Grotesk/TomatoGrotesk-MediumSlanted.otf",
+      "sha1": "7bbf5f4979e8d3c981caf8581c956b6ec9832401"
+    },
+    {
+      "path": "assets/fonts/Tomato_Grotesk/TomatoGrotesk-Regular.otf",
+      "sha1": "5b45240346ddb0578cd96e3f130dc331e0e672a5"
+    },
+    {
+      "path": "assets/fonts/Tomato_Grotesk/TomatoGrotesk-SemiBold.otf",
+      "sha1": "80c8d3eec803e64c4e1a529bc2962f6279b29550"
+    },
+    {
+      "path": "assets/fonts/Tomato_Grotesk/TomatoGrotesk-SemiBoldSlanted.otf",
+      "sha1": "054890559e7ad4f7f9fb67bf71ed2af89c7fee49"
+    },
+    {
+      "path": "assets/fonts/Tomato_Grotesk/TomatoGrotesk-Slanted.otf",
+      "sha1": "2d92f8be11fab7260b0e1ff5bb9cd0704ce8aebe"
+    },
+    {
+      "path": "assets/fonts/Tomato_Grotesk/TomatoGrotesk-Thin.otf",
+      "sha1": "7095170d8786afe999846c81932de699a5d73dc5"
+    },
+    {
+      "path": "assets/fonts/Tomato_Grotesk/TomatoGrotesk-ThinSlanted.otf",
+      "sha1": "8fc8f39b64b8be316754b656cbac9435a08d123f"
+    }
+  ]
+}

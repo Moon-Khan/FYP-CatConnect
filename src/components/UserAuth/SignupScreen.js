@@ -31,6 +31,8 @@ const SignupScreen = () => {
   GoogleSignin.configure({
     webClientId: '278400562229-9jso7k6r85blctogecoc8f1tmuonhguc.apps.googleusercontent.com',
   });
+  const chkadmin = 'notadmin'
+
 
   const handleEmailSignup = async () => {
     try {
@@ -72,7 +74,7 @@ const SignupScreen = () => {
         await auth().currentUser.reload();
       }
 
-      await addUserDataToFirestore(uid, email, firstname, password, fcmToken, '', '', '', '');
+      await addUserDataToFirestore(uid, email, firstname, password, fcmToken, '', '', '', '', chkadmin);
 
       dispatch(setUser(uid));
       dispatch(setLoading(false));
@@ -99,7 +101,9 @@ const SignupScreen = () => {
       // Retrieve user data and add to Firestore
       const uid = userCredential.user.uid;
       const fcmToken = await messaging().getToken();
-      await addUserDataToFirestore(uid, userCredential.user.email, userCredential.user.displayName, '', fcmToken, '', '', '', '');
+
+
+      await addUserDataToFirestore(uid, userCredential.user.email, userCredential.user.displayName, '', fcmToken, '', '', '', '', chkadmin);
 
       // Check if it's an existing user or a new one
       const isExistingUser = await fetchUserDataFromFirestore(uid);

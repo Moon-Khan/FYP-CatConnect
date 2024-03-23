@@ -19,7 +19,7 @@ const DoctorLoginScreen = () => {
         try {
 
             if (!email || !password) {
-                Alert.alert('Please Fill all Fields');
+                Alert.alert('Please Enter Email Password');
                 return;
             }
 
@@ -52,6 +52,7 @@ const DoctorLoginScreen = () => {
         }
     };
 
+    
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Login</Text>

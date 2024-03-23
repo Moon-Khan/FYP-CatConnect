@@ -641,6 +641,28 @@ const updateApproveDoctorProfile = async (doctorProfileId, status) => {
   }
 };
 
+const fetchApproveDocotorProfile = async () => {
+  try {
+    const approveCatProfileDocs = await firestore().collection('approveDoctorProfile').get();
+
+    if (approveCatProfileDocs) {
+      // Filter documents based on the status not equal to "pending"
+      const filteredDocs = approveCatProfileDocs.docs.filter(doc => doc.data().status !== "pending");
+
+      console.log('Filtered firebase cats:', filteredDocs);
+
+      return filteredDocs;
+    } else {
+      console.log('Approve cat profile does not exist in Firestore(firebase.js).');
+      return []; // Return an empty array if no documents found
+    }
+  } catch (error) {
+    console.error('Error fetching approve cat profile data:', error);
+    throw error;
+  }
+}
+
+
 const approveDoctorProfile = async (data) => {
   try {
     await firestore().collection('approveDoctorProfile').add(data);
@@ -910,6 +932,7 @@ export {
   updateNotificationFromFirestore,
   updateCatProfile,
   deleteCatProfile,
-  deleteUserProfile
+  deleteUserProfile,
+  fetchApproveDocotorProfile
   // deleteCatProfile
 };
