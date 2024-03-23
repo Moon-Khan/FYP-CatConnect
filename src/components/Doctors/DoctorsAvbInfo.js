@@ -516,7 +516,7 @@ const styles = StyleSheet.create({
         color: 'red',
         textDecorationLine: 'underline',
         marginTop: 5,
-        marginLeft: 280,
+        marginLeft: 290,
     },
     saveButton: {
         backgroundColor: '#47C1FF',

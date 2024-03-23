@@ -12,9 +12,12 @@ import {
     Alert,
 } from 'react-native';
 
-import DoctorAvailabilityScreen from './DoctorsAvbInfo';
+import { useNavigation } from '@react-navigation/native';
 
-const DoctorBasicInfoScreen = ({ navigation }) => { // Receive navigation prop
+
+const DoctorBasicInfoScreen = () => { // Receive navigation prop
+    const navigation = useNavigation();
+
     const [name, setName] = useState('');
     const [city, setCity] = useState('');
     const [specialization, setSpecialization] = useState('');
@@ -115,10 +118,6 @@ const DoctorBasicInfoScreen = ({ navigation }) => { // Receive navigation prop
             />
 
             <Text style={styles.title2}></Text>
-
-
-            <DoctorAvailabilityScreen />
-
 
             <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
                 <Text style={styles.buttonText}>Next</Text>

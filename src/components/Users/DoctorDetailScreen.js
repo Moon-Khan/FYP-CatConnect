@@ -1,323 +1,3 @@
-// import React, { useState, useEffect } from 'react';
-// import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
-// import auth from '@react-native-firebase/auth';
-// import { useNavigation } from '@react-navigation/native';
-// import { fetchUserDataFromFirestore } from '../../Services/firebase';
-// import { addAppointmentsDataToFirestore } from '../../Services/firebase';
-
-// const DoctorDetailScreen = ({ route }) => {
-//     const { doctorData } = route.params;
-//     const user = auth().currentUser;
-//     const [userData, setUserData] = useState(null);
-//     const navigation = useNavigation();
-
-//     useEffect(() => {
-//         const fetchUserData = async () => {
-//             try {
-//                 const userDoc = await fetchUserDataFromFirestore(user.uid);
-//                 if (userDoc.exists) {
-//                     setUserData(userDoc.data());
-//                 } else {
-//                     console.log('User document does not exist in Firestore.');
-//                 }
-//             } catch (error) {
-//                 console.error('Error fetching user data:', error);
-//             }
-//         };
-
-//         if (user) {
-//             fetchUserData();
-//         }
-//     }, [user]);
-
-//     const handleBookAppointment = async () => {
-//         try {
-//             console.log('Booking appointment for user:', user.uid);
-//             console.log('Booking appointment with doctor:', userData.username);
-//             if (user) {
-//                 const appointment = {
-//                     userId: user.uid,
-//                     userName: userData.username,
-//                     doctorId: doctorData.id,
-//                     status: 'pending',
-//                 };
-//                 await addAppointmentsDataToFirestore(appointment);
-
-//                 console.log('Appointment request sent');
-//                 navigation.navigate('Home');
-//             } else {
-//                 console.log('User not logged in');
-//             }
-//         } catch (error) {
-//             console.error('Error booking appointment:', error);
-//         }
-//     };
-
-//     if (!doctorData) {
-//         return (
-//             <View style={styles.container}>
-//                 <Text style={styles.errorText}>Doctor data not available.</Text>
-//             </View>
-//         );
-//     }
-
-//     return (
-//         <View style={styles.container}>
-//             <Image style={styles.doctorImage} source={require("../../../assets/Catassets/doctorPortrait.png")} />
-
-//             <View style={styles.detailsContainer}>
-//                 <Text style={styles.title}>{doctorData.username}</Text>
-//                 <View style={styles.detailContainer}>
-//                     <Text style={styles.label}></Text>
-//                     <Text style={styles.specialvalue}>Specialization: {doctorData.specialization}</Text>
-//                 </View>
-//                 <View style={styles.detailContainer}>
-//                     <Text style={styles.label}></Text>
-//                     <Text style={styles.specialvalue}>contactInfo: {doctorData.contactNumber}</Text>
-//                 </View>
-
-//                 <View style={styles.detailContainer}>
-//                     <Text style={styles.label}></Text>
-//                     <Text style={styles.specialvalue}>Day Available: {doctorData.availability.day}</Text>
-//                 </View>
-//                 <View style={styles.detailContainer}>
-//                     <Text style={styles.label}></Text>
-
-//                     <Text style={styles.specialvalue}>Time Available: {doctorData.availability.timeRange}</Text>
-//                 </View>
-//                 <TouchableOpacity style={styles.button} onPress={handleBookAppointment}>
-//                     <Text style={styles.buttonText}>Book Appointment</Text>
-//                 </TouchableOpacity>
-//             </View>
-
-
-//         </View>
-//     );
-// };
-
-// const styles = StyleSheet.create({
-//     container: {
-//         flex: 1,
-//         // padding: 10,
-//         backgroundColor: '#fff'
-
-//     },
-//     doctorImage: {
-//         width: '70%', // Adjust the width as needed
-//         height: '60%',   // Adjust the height as needed
-//         borderRadius: 26, // Adjust the borderRadius as needed
-//         marginTop: 10,
-//         marginBottom: 16,
-//         marginLeft: 50,
-//     },
-
-
-//     specialvalue: {
-//         position: 'absolute',
-//         color: '#fff',
-//         fontFamily: 'Poppins-SemiBold',
-//         fontSize: 18,
-//     },
-
-//     detailsContainer: {
-//         marginTop: -50,
-//         backgroundColor: '#47C1FF',
-//         height: '60%',
-//         borderTopRightRadius: 50,
-//         borderTopLeftRadius: 50,
-//         width: '100%',
-//         borderWidth: 1,
-//         borderColor: '#47C1FF',
-//     },
-//     title: {
-//         fontSize: 28,
-//         marginBottom: 5,
-//         marginTop: 15,
-//         textAlign: 'center',
-//         color: '#fff',
-//         fontFamily: 'Poppins-ExtraBold',
-//     },
-//     detailContainer: {
-//         flexDirection: 'row',
-//         marginBottom: 8,
-//         justifyContent: 'center'
-//     },
-//     label: {
-//         fontFamily: 'Poppins-SemiBold',
-//         fontSize: 16,
-//         marginRight: 8,
-//         color: '#fff'
-//     },
-//     value: {
-//         fontSize: 16,
-//         fontFamily: 'Poppins-SemiBold',
-//         marginRight: 8,
-//         color: '#fff'
-//     },
-//     button: {
-//         backgroundColor: '#fff',
-//         padding: 10,
-//         borderRadius: 26,
-//         marginTop: 15,
-//         width: '70%',
-//         alignItems: 'center',
-//         alignSelf: 'center',
-//     },
-//     buttonText: {
-//         fontSize: 18,
-//         color: '#47C1FF',
-//         fontFamily: 'Poppins-SemiBold',
-//     },
-// });
-
-// // export default DoctorDetailScreen;
-// import React, { useState, useEffect } from 'react';
-// import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView } from 'react-native';
-// import auth from '@react-native-firebase/auth';
-// import { useNavigation } from '@react-navigation/native';
-// import { fetchUserDataFromFirestore, addAppointmentsDataToFirestore, fetchBookedAppointmentsFromFirestore } from '../../Services/firebase';
-
-// const DoctorDetailScreen = ({ route }) => {
-//     const { doctorData } = route.params;
-//     const user = auth().currentUser;
-//     const [userData, setUserData] = useState(null);
-//     const [selectedDay, setSelectedDay] = useState(null);
-//     const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
-//     const [bookedTimeSlots, setBookedTimeSlots] = useState([]);
-//     const [bookedAppointments, setBookedAppointments] = useState([]);
-//     const navigation = useNavigation();
-
-//     useEffect(() => {
-//         const fetchUserData = async () => {
-//             try {
-//                 const userDoc = await fetchUserDataFromFirestore(user.uid);
-//                 if (userDoc.exists) {
-//                     setUserData(userDoc.data());
-//                 } else {
-//                     console.log('User document does not exist in Firestore.');
-//                 }
-//             } catch (error) {
-//                 console.error('Error fetching user data:', error);
-//             }
-//         };
-
-//         const fetchBookedAppointments = async () => {
-//             try {
-//                 if (!selectedDay || !doctorData) return;
-//                 const appointments = await fetchBookedAppointmentsFromFirestore(selectedDay, doctorData.id);
-//                 setBookedAppointments(appointments);
-//             } catch (error) {
-//                 console.error('Error fetching booked appointments:', error);
-//             }
-//         };
-
-//         if (user) {
-//             fetchUserData();
-//         }
-
-//         fetchBookedAppointments();
-
-//     }, [selectedDay, doctorData, user]);
-
-//     const handleBookAppointment = async () => {
-//         try {
-//             if (!selectedDay || !selectedTimeSlot) {
-//                 console.log('Please select a day and a time slot.');
-//                 return;
-//             }
-
-//             if (bookedTimeSlots.includes(selectedTimeSlot)) {
-//                 console.log('This time slot is already booked. Please select another time slot.');
-//                 return;
-//             }
-
-//             if (user && userData && doctorData) {
-//                 const appointment = {
-//                     userId: user.uid,
-//                     userName: userData.firstname,
-//                     doctorId: doctorData.id,
-//                     day: selectedDay,
-//                     timeSlot: selectedTimeSlot,
-//                     status: 'pending',
-//                 };
-//                 await addAppointmentsDataToFirestore(appointment);
-//                 console.log('Appointment request sent');
-//                 navigation.navigate('Home');
-//             } else {
-//                 console.log('User or doctor data not available');
-//             }
-//         } catch (error) {
-//             console.error('Error booking appointment:', error);
-//         }
-//     };
-
-//     if (!doctorData) {
-//         return (
-//             <View style={styles.container}>
-//                 <Text style={styles.errorText}>Doctor data not available.</Text>
-//             </View>
-//         );
-//     }
-//     // Function to parse time strings into Date objects
-//     const timestampToDate = (timestamp) => {
-//         return timestamp.toDate();
-//     };
-
-//     return (
-//         <ScrollView contentContainerStyle={styles.container}>
-//             <Image style={styles.doctorImage} source={require("../../../assets/Catassets/doctorPortrait.png")} />
-//             <View style={styles.detailsContainer}>
-//                 <Text style={styles.title}>{doctorData.username}</Text>
-//                 <View style={styles.detailContainer}>
-//                     <Text style={styles.label}>Specialization:</Text>
-//                     <Text style={styles.value}>{doctorData.specialization}</Text>
-//                 </View>
-//                 <View style={styles.detailContainer}>
-//                     <Text style={styles.label}>Contact Info:</Text>
-//                     <Text style={styles.value}>{doctorData.contactNumber}</Text>
-//                 </View>
-//                 <View style={styles.detailContainer}>
-//                     <Text style={styles.label}>Availability:</Text>
-//                     <ScrollView horizontal={true}>
-//                         {Object.keys(doctorData.availability).map((day, index) => (
-//                             <TouchableOpacity key={index} onPress={() => setSelectedDay(day)}>
-//                                 <Text style={[styles.day, selectedDay === day && styles.selectedDay]}>{day}</Text>
-//                             </TouchableOpacity>
-//                         ))}
-//                     </ScrollView>
-//                 </View>
-//                 {selectedDay && doctorData.availability[selectedDay].length > 0 ? (
-//                     doctorData.availability[selectedDay].map((slot, index) => (
-//                         <View key={index}>
-//                             {slot.startTime && slot.endTime ? (
-//                                 <TouchableOpacity
-//                                     onPress={() => setSelectedTimeSlot(slot)}
-//                                     style={[
-//                                         styles.slot,
-//                                         selectedTimeSlot === slot && styles.selectedSlot // Apply border style if selected
-//                                     ]}
-//                                 >
-//                                     <Text style={styles.slotText}>
-//                                         {timestampToDate(slot.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - {timestampToDate(slot.endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-//                                     </Text>
-//                                 </TouchableOpacity>
-//                             ) : (
-//                                 <Text>No valid time slot available for this day.</Text>
-//                             )}
-//                         </View>
-//                     ))
-//                 ) : (
-//                     <Text>No time slots available for this day.</Text>
-//                 )}
-
-//                 <TouchableOpacity style={styles.button} onPress={handleBookAppointment}>
-//                     <Text style={styles.buttonText}>Book Appointment</Text>
-//                 </TouchableOpacity>
-//             </View>
-//         </ScrollView>
-//     );
-// };
-
 // src/components/Users/DoctorDetailScreen.js
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView, Alert } from 'react-native';
@@ -328,9 +8,9 @@ import { fetchUserDataFromFirestore, addAppointmentsDataToFirestore, fetchBooked
 const DoctorDetailScreen = ({ route }) => {
 
     const { doctorData } = route.params;
-    console.log('doctor detail screen--------->', doctorData)
-    const { name, specialization, contactNumber, availability } = doctorData._data;
-    console.log('doctor detail screen--------->', name)
+    console.log('-------------DETAIL doctorData--->', doctorData);
+    const { name, specialization, qualification, availability, experience, city, doctorId } = doctorData;
+    console.log('----------------doctorId------------>',doctorId)
 
     const user = auth().currentUser;
     const [userData, setUserData] = useState(null);
@@ -357,11 +37,11 @@ const DoctorDetailScreen = ({ route }) => {
             try {
                 if (!selectedDay || !doctorData) return;
 
-                console.log('doctorData--->',doctorData)
+                console.log('-------fetchBookedAppointments doctorData--->', doctorData)
 
-                console.log('doctorData.doctorid-->',doctorData._data.doctorid)
+                console.log('----------fetchBookedAppointments doctorData.doctorid-->',doctorId)
 
-                const appointments = await fetchBookedAppointmentsFromFirestore(selectedDay, doctorData._data.doctorid);
+                const appointments = await fetchBookedAppointmentsFromFirestore(selectedDay, doctorId);
                 console.log('fetch appointment in detail scren', appointments)
                 setBookedAppointments(appointments);
             } catch (error) {
@@ -406,18 +86,12 @@ const DoctorDetailScreen = ({ route }) => {
                 return;
             }
 
-            console.log('------user------>',user)
-            console.log('-----userData------>',userData)
-            console.log('-------doctorData------>',doctorData)
-
-
-
             // If the slot is available, proceed with booking
             if (user && userData && doctorData) {
                 const appointment = {
                     userId: user.uid,
                     userName: userData.firstname,
-                    doctorId: doctorData._data.doctorid,
+                    doctorId: doctorData.doctorId,
                     day: selectedDay,
                     timeSlot: selectedTimeSlot,
                     status: 'pending',
@@ -443,67 +117,104 @@ const DoctorDetailScreen = ({ route }) => {
         );
     }
 
+    const weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+
+    const sortDays = (availability) => {
+        // Create a copy of weekdays array to avoid mutation
+        const sortedWeekdays = [...weekdays];
+        // Filter out days not present in availability
+        const availableDays = sortedWeekdays.filter((day) => Object.keys(availability).includes(day));
+        // Sort the available days based on their index in weekdays
+        availableDays.sort((a, b) => weekdays.indexOf(a) - weekdays.indexOf(b));
+        return availableDays;
+    };
+
     // Function to parse time strings into Date objects
     const timestampToDate = (timestamp) => {
         return timestamp.toDate();
     };
 
     return (
-        <ScrollView contentContainerStyle={styles.container}>
-            <Image style={styles.doctorImage} source={require("../../../assets/Catassets/doctorPortrait.png")} />
-            <View style={styles.detailsContainer}>
-                <Text style={styles.title}>{name}</Text>
-                <View style={styles.detailContainer}>
-                    <Text style={styles.label}>Specialization:</Text>
-                    <Text style={styles.value}>{specialization}</Text>
+        <View style={styles.container}>
+            <View style={styles.header}>
+                <Text style={styles.headerText}>Appointment</Text>
+            </View>
+            <View style={styles.doctorCard}>
+                <View style={styles.doctorIconContainer}>
+                    <Image
+                        style={styles.thumbnailImage}
+                        resizeMode="cover"
+                        source={require("../../../assets/Catassets/doctoruser2.png")}
+                    />
                 </View>
-                <View style={styles.detailContainer}>
-                    <Text style={styles.label}>Contact Info:</Text>
-                    <Text style={styles.value}>{contactNumber}</Text>
+                <View style={styles.doctorInfoContainer}>
+                    <Text style={styles.doctorName}>Dr. {name}</Text>
+
+                    <View style={styles.qualificationspecializationContainer}>
+                        <Text style={styles.specialization}>{specialization}</Text>
+                        <Text style={styles.qualification}> {qualification}</Text>
+                    </View>
+
                 </View>
-                <View style={styles.detailContainer}>
-                    <Text style={styles.label}>Availability:</Text>
-                    <ScrollView horizontal={true}>
-                        {Object.keys(availability).map((day, index) => (
-                            <TouchableOpacity key={index} onPress={() => setSelectedDay(day)}>
-                                <Text style={[styles.day, selectedDay === day && styles.selectedDay]}>{day}</Text>
-                            </TouchableOpacity>
-                        ))}
-                    </ScrollView>
+            </View>
+
+
+            <View style={styles.exp_City_container}>
+                <View style={styles.experienceContainer}>
+                    <Text style={styles.experience}>{experience} yrs. of experience</Text>
                 </View>
+                <View style={styles.cityContainer}>
+                    <Text style={styles.city}>{city}</Text>
+                </View>
+            </View>
+
+            <View style={styles.scheduleContainer}>
+                <Text style={styles.scheduleText}>Schedules</Text>
+                <ScrollView horizontal={true}>
+                    {sortDays(availability).map((day, index) => (
+                        <TouchableOpacity
+                            key={index}
+                            onPress={() => setSelectedDay(day)}
+                            style={[styles.day, selectedDay === day && { borderRadius: 20, backgroundColor: '#CCEEFF' }]}
+                        >
+                            <Text style={styles.dayText}>{day}</Text>
+                        </TouchableOpacity>
+                    ))}
+                </ScrollView>
+            </View>
+
+            <View style={styles.timeContainer1}>
+                <Text style={styles.timeText}>Choose Time</Text>
 
                 {selectedDay && availability[selectedDay].length > 0 ? (
-                    availability[selectedDay].map((slot, index) => (
-                        <View key={index}>
-                            {slot.startTime && slot.endTime ? (
-
-                                <TouchableOpacity
-                                    onPress={() => setSelectedTimeSlot(slot)}
-                                    style={[
-                                        styles.slot,
-                                        selectedTimeSlot === slot && styles.selectedSlot, // Apply border style if selected
-                                        bookedAppointments.some(appointment => appointment.timeSlot.startTime.isEqual(slot.startTime)) && styles.bookedSlot // Check if slot is booked and apply style
-                                    ]}
-                                >
-                                    <Text style={styles.slotText}>
-                                        {timestampToDate(slot.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - {timestampToDate(slot.endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                    </Text>
-                                </TouchableOpacity>
-                            ) : (
-                                <Text>No valid time slot available for this day.</Text>
-                            )}
-                        </View>
-                    ))
+                    <ScrollView horizontal={true}>
+                        {availability[selectedDay].map((slot, index) => (
+                            <View key={index} style={styles.timeslotContainer2}>
+                                {slot.startTime && slot.endTime ? (
+                                    <TouchableOpacity
+                                        key={index}
+                                        onPress={() => setSelectedTimeSlot(slot)}
+                                        style={[styles.timeslot3, selectedTimeSlot === slot && styles.selectedSlot, bookedAppointments.some(appointment => appointment.timeSlot.startTime.isEqual(slot.startTime)) && styles.bookedSlot]}
+                                    >
+                                        <Text style={styles.slotText}>
+                                            {timestampToDate(slot.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - {timestampToDate(slot.endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                        </Text>
+                                    </TouchableOpacity>
+                                ) : (
+                                    <Text>No valid time slot available for this day.</Text>
+                                )}
+                            </View>
+                        ))}
+                    </ScrollView>
                 ) : (
-                    <Text>No time slots available for this day.</Text>
+                    <Text style={{ marginTop: 5, fontSize: 12, fontFamily: 'Poppins-SemiBold' }} >OOPS! No slots Available</Text>
                 )}
-
-
-                <TouchableOpacity style={styles.button} onPress={handleBookAppointment}>
-                    <Text style={styles.buttonText}>Book Appointment</Text>
-                </TouchableOpacity>
             </View>
-        </ScrollView>
+
+            <TouchableOpacity style={styles.button} onPress={handleBookAppointment}>
+                <Text style={styles.buttonText}>Book Appointment</Text>
+            </TouchableOpacity>
+        </View >
     );
 };
 
@@ -511,74 +222,234 @@ const DoctorDetailScreen = ({ route }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
+    },
+    header: {
+        backgroundColor: '#ffff',
+        borderBottomLeftRadius: 20,
+        borderBottomRightRadius: 20,
+        paddingHorizontal: 20,
+        paddingVertical: 35,
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 5,
+        },
+        shadowOpacity: 1,
+        shadowRadius: 20,
+        elevation: 30,
+        marginBottom: 30,
+    },
+    headerText: {
+        fontSize: 20,
+        color: '#47C1FF',
+        textAlign: 'center',
+        fontFamily: 'Poppins-SemiBold',
+    },
+
+    doctorCard: {
+        flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'flex-start',
-        paddingVertical: 20,
+        marginLeft: 10,
+        width: '95%',
+        borderRadius: 20, // Add border radius
+        shadowColor: '#000', // Add shadow
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 1,
+        backgroundColor: '#fff', // Set background color
+
     },
-    doctorImage: {
-        width: '70%',
-        height: 200,
-        borderRadius: 26,
-        marginBottom: 20,
+    doctorIconContainer: {
+        position: 'absolute',
+        top: 20,
+        marginLeft: 20,
+        backgroundColor: '#CAEDFF',
+        borderRadius: 100,
+        padding: 10,
+
     },
-    detailsContainer: {
-        backgroundColor: '#47C1FF',
-        borderRadius: 20,
-        padding: 20,
-        width: '90%',
+    doctorInfoContainer: {
+        marginTop: 20,
+        marginBottom: 10,
+        marginLeft: 100,
+        flex: 1,
+        width: '90%', // Adjust the width as needed
+    
     },
+
+    doctorName: {
+        fontSize: 20,
+        fontFamily: 'Poppins-SemiBold',
+        color: '#212529',
+    },
+    qualificationspecializationContainer:{
+        flexDirection: 'row',
+    },
+
+    qualification: {
+        marginLeft: 155,
+        fontSize: 16,
+        fontFamily: 'Poppins-SemiBold',
+        color: '#7E7E7E',
+    },
+    specialization: {
+        fontSize: 16,
+        fontFamily: 'Poppins-SemiBold',
+        color: '#7E7E7E',
+    },
+
+    thumbnailImage: {
+        width: 40,
+        height: 40,
+        borderRadius: 10,
+    },
+
     title: {
         fontSize: 24,
         fontWeight: 'bold',
         marginBottom: 10,
-        color: '#fff',
+        color: 'green',
         textAlign: 'center',
     },
-    detailContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: 10,
+
+
+    exp_City_container: {
+        flexDirection: 'row', // Arrange children horizontally
+        marginTop: 15,
+        marginLeft: 10,
     },
-    label: {
-        fontWeight: 'bold',
-        marginRight: 5,
-        color: '#fff',
-    },
-    value: {
-        color: '#fff',
-    },
-    button: {
-        backgroundColor: '#fff',
-        paddingVertical: 10,
+
+    cityContainer: {
+        width: '20%', // Match width of leftContainer for equal size
+        backgroundColor: 'white',
         borderRadius: 20,
-        marginTop: 20,
+        height: 45,
         alignItems: 'center',
+        paddingTop: 12,
+        marginLeft: 145,
     },
-    buttonText: {
-        fontSize: 18,
-        fontWeight: 'bold',
+    city: {
         color: '#47C1FF',
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+    experienceContainer: {
+        width: '40%',
+        backgroundColor: 'white',
+        borderRadius: 20,
+        height: 45,
+        alignItems: 'center',
+        paddingTop: 10,
+    },
+    experience: {
+        color: '#47C1FF',
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+    demographyContainer: {
+        backgroundColor: 'white',
+        marginTop: 15,
+        marginLeft: 10,
+        marginRight: 10,
+        padding: 10,
+        borderRadius: 20,
+
+    },
+    demographyText: {
+        fontSize: 20,
+        fontFamily: 'Poppins-SemiBold',
+        color: '#212529',
+    },
+    demographyDetail: {
+        fontSize: 14,
+        fontFamily: 'Poppins-Regular',
+        color: '#212529',
+    },
+
+    scheduleContainer: {
+        backgroundColor: 'white',
+        marginTop: 15,
+        marginLeft: 10,
+        marginRight: 10,
+        padding: 10,
+        borderRadius: 20,
+    },
+    scheduleText: {
+        fontSize: 20,
+        fontFamily: 'Poppins-SemiBold',
+        color: '#212529',
     },
     day: {
         marginRight: 10,
-        color: '#fff',
+        padding: 10, // Add padding for better spacing
+        borderRadius: 5, // Apply border radius for a softer look
     },
-    slot: {
+    dayText: {
+        color: '#212529',
+        fontSize: 12,
+        fontFamily: 'Poppins-SemiBold',
+    },
+
+    timeContainer1: {
+        backgroundColor: 'white',
+        borderRadius: 20,
+        padding: 10,
+        margin: 15,
+    },
+    timeslotContainer2: {
+        flexDirection: 'row', // Remove if not needed for layout
+        marginTop: 10,
+        marginLeft: 10,
+    },
+    timeText: {
+        fontSize: 20,
+        fontFamily: 'Poppins-SemiBold',
+        color: '#212529',
+    },
+    timeslot3: {
         marginVertical: 5,
         color: '#fff',
         borderWidth: 1,
         borderColor: 'transparent',
         borderRadius: 5,
+        width: 'auto', // Remove fixed width
+        height: 50,
+        alignItems: 'center',
+        paddingTop: 15,
+        marginRight: 10, // Add margin for spacing between time slots
     },
+
     bookedSlot: {
-        borderColor: 'red', // Red border color for booked slots
+        padding: 10,
+        borderRadius: 20,
+        backgroundColor: '#FFD8D8'
     },
     selectedSlot: {
-        borderColor: 'black', // Change border color if selected
+        borderRadius: 20,
+        padding: 10,
+        backgroundColor: '#CAEDFF'
     },
     slotText: {
-        color: '#fff',
+        fontSize: 12,
+        fontFamily: 'Poppins-SemiBold',
+        color: '#212529',
+    },
+    button: {
+        backgroundColor: '#47C1FF',
+        paddingVertical: 15,
+        borderRadius: 20,
+        marginTop: 20,
+        alignItems: 'center',
+        margin: 20,
+    },
+    buttonText: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: 'white',
     },
 });
 

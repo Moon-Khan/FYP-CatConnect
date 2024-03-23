@@ -856,7 +856,6 @@ const HomeScreen = ({ navigation }) => {
             </View>
           </View>
 
-
           <TouchableOpacity style={styles.notifibutton} onPress={handleNotificationPress}>
             <Image
               style={styles.NotificationIcon}
@@ -883,6 +882,7 @@ const HomeScreen = ({ navigation }) => {
             )}
             keyExtractor={(item) => item.key}
           />
+          
           <Text style={styles.feedText}>Recommended</Text>
           <CatProfileRecommendationScreen />
           
