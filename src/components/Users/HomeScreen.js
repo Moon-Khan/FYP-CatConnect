@@ -693,13 +693,27 @@ const HomeScreen = ({ navigation }) => {
 
     fetchNotifications();
   }, [user.uid]);
+  // const handleNotificationPress = async () => {
+  //   try {
+  //     // Mark all unread notifications as read
+  //     await markAllAsRead();
+
+  //     // Navigate to NotificationsScreen
+  //     navigation.navigate('NotificationsScreen', { notifications: [], markAsRead: markAllAsRead });
+  //   } catch (error) {
+  //     console.error('Error handling notification press:', error);
+  //   }
+  // };
   const handleNotificationPress = async () => {
     try {
       // Mark all unread notifications as read
       await markAllAsRead();
 
+      // Set markAsRead as an option using navigation.setOptions
+      navigation.setOptions({ markAsRead: markAllAsRead });
+
       // Navigate to NotificationsScreen
-      navigation.navigate('NotificationsScreen', { notifications: [], markAsRead: markAllAsRead });
+      navigation.navigate('NotificationsScreen', { notifications: [] });
     } catch (error) {
       console.error('Error handling notification press:', error);
     }
@@ -723,16 +737,7 @@ const HomeScreen = ({ navigation }) => {
     }
   };
 
-  const handleSearch = (text) => {
-    setSearchText(text);
 
-    const filteredProfiles = catProfiles.filter((catProfile) => {
-      const catName = catProfile['1'].basicInfo.catName.toLowerCase();
-      return catName.includes(text.toLowerCase());
-    });
-
-    setFilteredCatProfiles(filteredProfiles);
-  };
 
   const handleCatProfilePress = async (catProfile) => {
     try {
@@ -767,6 +772,22 @@ const HomeScreen = ({ navigation }) => {
         console.error('Error sharing:', error.message);
       }
     })();
+  };
+
+  const handleSearch = (text) => {
+    setSearchText(text);
+
+    const filteredProfiles = catProfiles.filter((catProfile) => {
+      const catName = catProfile.basicInfo.catName.toLowerCase(); // Corrected access to basicInfo
+      return catName.includes(text.toLowerCase());
+    });
+
+    setFilteredCatProfiles(filteredProfiles);
+  };
+
+
+  const handleFilterPress = () => {
+    navigation.navigate('SearchFilter');
   };
 
   const renderPetCard = (catProfile) => {
@@ -848,11 +869,16 @@ const HomeScreen = ({ navigation }) => {
                 value={searchText}
                 style={styles.searchInput}
               />
-              <Image
-                style={styles.filtericon}
-                resizeMode="cover"
-                source={require("../../../assets/Catassets/filter.png")}
-              />
+              <TouchableOpacity onPress={handleFilterPress}>
+                <View style={styles.filterIconContainer}>
+                  <Image
+                    style={styles.filterIcon}
+                    resizeMode="cover"
+                    source={require("../../../assets/Catassets/filltermain.png")}
+                  />
+                </View>
+
+              </TouchableOpacity>
             </View>
           </View>
 
@@ -882,10 +908,10 @@ const HomeScreen = ({ navigation }) => {
             )}
             keyExtractor={(item) => item.key}
           />
-          
+
           <Text style={styles.feedText}>Recommended</Text>
           <CatProfileRecommendationScreen />
-          
+
         </View>
       </ScrollView>
       <View style={styles.bottomMenu}>
@@ -959,7 +985,7 @@ const styles = StyleSheet.create({
     width: 30,
     height: 40,
     position: "absolute",
-    right: 5,
+    right: 10,
   },
   searchIcon: {
     marginLeft: 10,
@@ -1023,8 +1049,8 @@ const styles = StyleSheet.create({
 
   feedText: {
     marginTop: 20,
-    fontSize: 20,
-    fontFamily: 'Poppins-SemiBold',
+    fontSize: 16,
+    fontFamily: 'Poppins-Bold',
     color: '#212529',
     marginBottom: 10,
   },
@@ -1037,6 +1063,20 @@ const styles = StyleSheet.create({
     marginBottom: 25,
 
   },
+  filterIconContainer: {
+    backgroundColor: '#212529',
+    borderRadius: 15,
+    padding: 10,
+    marginRight: 15,
+    paddingRight: 15,
+    paddingLeft: 15,
+  },
+
+  filterIcon: {
+    width: 22,
+    height: 22,
+  },
+
   cardContent: {
     flexDirection: 'column',
     marginLeft: 10,
@@ -1098,7 +1138,7 @@ const styles = StyleSheet.create({
   },
 
   bottomMenu: {
-    marginTop: 2,
+    marginTop: 5,
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',

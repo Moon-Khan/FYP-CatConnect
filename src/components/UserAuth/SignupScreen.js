@@ -66,6 +66,7 @@ const SignupScreen = () => {
 
       const uid = auth().currentUser.uid; // Get the user ID after creation
       const fcmToken = await messaging().getToken();
+      Alert.alert('Verify Your Email');
 
       // Wait for email verification before adding data to Firestore
       await auth().currentUser.reload(); // Reload user to check verification status
@@ -75,6 +76,7 @@ const SignupScreen = () => {
       }
 
       await addUserDataToFirestore(uid, email, firstname, password, fcmToken, '', '', '', '', chkadmin);
+
 
       dispatch(setUser(uid));
       dispatch(setLoading(false));
@@ -203,7 +205,7 @@ const styles = StyleSheet.create({
     paddingLeft: 40,
   },
   buttonText: {
-    fontSize: 18,
+    fontSize: 16,
     color: '#ffff',
     textAlign: 'center',
     fontFamily: 'Poppins-Medium',
@@ -224,7 +226,7 @@ const styles = StyleSheet.create({
 
   },
   googlebuttonText: {
-    fontSize: 18,
+    fontSize: 14,
     color: '#47C1FF',
     textAlign: 'center',
     fontFamily: 'Poppins-Medium',
@@ -232,15 +234,15 @@ const styles = StyleSheet.create({
   emailIcon: {
     position: 'absolute',
     top: 5,
-    left: 5,
-    width: 40,
-    height: 40,
+    left: 10,
+    width: 35,
+    height: 35,
     resizeMode: 'contain',
   },
   googleIcon: {
     position: 'absolute',
     top: 10,
-    left: 5,
+    left: 10,
     width: 30,
     height: 30,
     resizeMode: 'contain',

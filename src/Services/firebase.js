@@ -357,9 +357,13 @@ const fetchDoctorDataFromFirestore = async (userId) => {
       return doctorDoc;
     } else {
       console.log('Doctor document does not exist in Firestore(firebase.js).');
+      return null; // or return an empty object {} depending on your preference
+
     }
   } catch (error) {
     console.error('Error fetching doctor data:', error);
+    return null; // handle error by returning null or appropriate value
+
   }
 };
 
@@ -461,7 +465,65 @@ const fetchAppointmentsFromFirestore = async (appointmentId) => {
 // };
 
 
+const createAnnouncementAndNotifyUsers = async (announcementData) => {
+  try {
+    const announcementRef = await firestore().collection('announcements').add(announcementData.message); // Accessing recipients array from message property
+    console.log('Announcement created successfully');
 
+    const announcementMessage = announcementData.message.text; // Accessing text property from message object
+    const recipients = announcementData.message.recipients || []; // Ensure recipients array is defined
+
+    // Fetch user IDs
+    const usersSnapshot = await firestore().collection('users').get();
+    const userIds = usersSnapshot.docs.map(doc => doc.id);
+    console.log('userid-->', userIds);
+
+    // Fetch doctor IDs
+    const doctorsSnapshot = await firestore().collection('doctors').get();
+    const doctorIds = doctorsSnapshot.docs.map(doc => doc.id);
+    console.log('doctorsID-->', doctorIds);
+
+    // Filter recipients based on whether they are users or doctors
+    const userRecipients = recipients.filter(id => userIds.includes(id));
+    console.log('userRecipients-->', userRecipients);
+    const doctorRecipients = recipients.filter(id => doctorIds.includes(id));
+    console.log('doctorRecipients-->', doctorRecipients);
+
+    // Send notifications to users
+    const userNotificationPromises = userRecipients.map(async (userId) => {
+      await addNotificationToFirestore(userId, announcementMessage, 'unread');
+      console.log('announcement notification sent to user')
+    });
+    await Promise.all(userNotificationPromises);
+
+    // Send notifications to doctors
+    const doctorNotificationPromises = doctorRecipients.map(async (doctorId) => {
+      await addNotificationForDoctorToFirestore(doctorId, announcementMessage, 'unread');
+      console.log('announcement notification sent to doctor')
+    });
+    await Promise.all(doctorNotificationPromises);
+
+  } catch (error) {
+    console.error('Error creating announcement and notifying users:', error);
+    throw error;
+  }
+};
+
+
+
+const fetchAllAnnouncementsForAdmin = async () => {
+  try {
+    const announcementsSnapshot = await firestore().collection('announcements').get();
+    const announcementsData = announcementsSnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    return announcementsData;
+  } catch (error) {
+    console.error('Error fetching announcements:', error);
+    throw error;
+  }
+};
 
 const fetchCatProfilesFromFirestore = async () => {
   try {
@@ -541,7 +603,7 @@ const fetchCatProfilesForUser = async (userId) => {
       ...doc.data()
     }));
 
-    console.log('cat profiels firestore(curernt user)--->',catProfilesData)
+    console.log('cat profiels firestore(curernt user)--->', catProfilesData)
     return catProfilesData;
   } catch (error) {
     console.error('Error fetching cat profiles for user:', error);
@@ -554,12 +616,12 @@ const fetchApproveCatProfile = async () => {
   try {
     const approveCatProfileDocs = await firestore().collection('approveCatProfiles').get();
 
-  
+
     if (approveCatProfileDocs) {
       // Filter documents based on the status not equal to "pending"
       const filteredDocs = approveCatProfileDocs.docs.filter(doc => doc.data().status !== "pending");
       const catProfileIds = approveCatProfileDocs.docs.map(doc => doc.id);
-      
+
       console.log('Cat Profile IDs:', catProfileIds);
       console.log('Filtered firebase cats:', filteredDocs);
 
@@ -730,7 +792,8 @@ const addCatProfileToFirestore = async (userId, data) => {
   }
 };
 
-const addUserDataToFirestore = async (userId, emailId, firstname, password, fcmtoken, lastname, contact, city, gender) => {
+
+const addUserDataToFirestore = async (userId, emailId, firstname, password, fcmtoken, lastname, contact, city, gender, chkadmin) => {
   try {
     const userDocRef = firestore().collection('users').doc(userId);
     const userData = {
@@ -742,6 +805,7 @@ const addUserDataToFirestore = async (userId, emailId, firstname, password, fcmt
       contact: contact,
       city: city,
       gender: gender,
+      chkadmin: chkadmin,
     };
 
     await userDocRef.set(userData);
@@ -751,6 +815,7 @@ const addUserDataToFirestore = async (userId, emailId, firstname, password, fcmt
     throw error;
   }
 };
+
 
 const addDoctorToFirestore = async (doctorId, email, username, password, specialization, qualification, availability, contactNumber, city) => {
   try {
@@ -901,6 +966,35 @@ const deleteUserProfile = async (userId) => {
   }
 };
 
+const deleteDoctorProfile = async (userId) => {
+  try {
+    await firestore()
+      .collection('doctors')
+      .doc(userId)
+      .delete();
+    console.log('User profile deleted successfully');
+  } catch (error) {
+    console.error('Error deleting user profile:', error);
+    throw error;
+  }
+};
+
+// Function to create feedback document in Firestore
+const createFeedback = async (username, feedbackData) => {
+  try {
+    // Add a new document with a generated ID to the "feedback" collection
+    await firestore().collection('feedback').add({
+      username: username, // Username of the user providing feedback
+      feedbackData: feedbackData, // Feedback data (text, etc.)
+      createdAt: firestore.FieldValue.serverTimestamp() // Timestamp of when the feedback was created
+    });
+    console.log('Feedback document added successfully');
+  } catch (error) {
+    console.error('Error adding feedback document:', error);
+    throw error; // Throw the error to handle it in the calling function
+  }
+};
+
 
 export {
   addCatProfileToFirestore,
@@ -915,6 +1009,7 @@ export {
   fetchCatProfilesForUser,
   fetchApproveCatProfile,
   approveDoctorProfile,
+  fetchAllAnnouncementsForAdmin,
   fetchforAdminApproveCatProfile,
   fetchforAdminApproveDoctorProfile,
   approveCatProfile,
@@ -933,6 +1028,9 @@ export {
   updateCatProfile,
   deleteCatProfile,
   deleteUserProfile,
-  fetchApproveDocotorProfile
+  createAnnouncementAndNotifyUsers,
+  fetchApproveDocotorProfile,
+  deleteDoctorProfile,
+  createFeedback
   // deleteCatProfile
 };

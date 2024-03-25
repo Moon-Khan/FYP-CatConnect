@@ -92,7 +92,6 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingLeft: 15,
     paddingRight:15,
-    backgroundColor: '#ffff',
   },
   greeting: {
     paddingTop: 35,
@@ -106,6 +105,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins-Bold',
     color: '#212529',
     flex: 1,
+    marginBottom:30,
   },
   menuContainer: {
     flexDirection: 'row',

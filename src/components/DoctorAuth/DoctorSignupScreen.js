@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
         paddingLeft: 40,
     },
     buttonText: {
-        fontSize: 18,
+        fontSize: 14,
         color: '#ffff',
         textAlign: 'center',
         fontFamily: 'Poppins-Medium',
@@ -208,7 +208,7 @@ const styles = StyleSheet.create({
 
     },
     googlebuttonText: {
-        fontSize: 18,
+        fontSize: 14,
         color: '#47C1FF',
         textAlign: 'center',
         fontFamily: 'Poppins-Medium',
@@ -217,8 +217,8 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: 5,
         left: 5,
-        width: 40,
-        height: 40,
+        width: 35,
+        height: 35,
         resizeMode: 'contain',
     },
     googleIcon: {

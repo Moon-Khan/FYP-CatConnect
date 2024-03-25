@@ -59,7 +59,7 @@ const ProfileScreen = ({ navigation }) => {
   };
 
   const navigateToFeedback = () => {
-    navigation.navigate('Feedback');
+    navigation.navigate('feedbackscreen');
   };
   const handleDeleteProfile = () => {
     Alert.alert(
@@ -91,6 +91,10 @@ const ProfileScreen = ({ navigation }) => {
     <View style={styles.container}>
 
       <View style={styles.header}>
+
+        <TouchableOpacity style={styles.backButtonContainer} onPress={() => navigation.goBack()}>
+          <Image source={require("../../../assets/Catassets/backbtn.png")} style={styles.bactbtn} />
+        </TouchableOpacity>
         <Text style={styles.headerText}>Profile</Text>
       </View>
 
@@ -150,45 +154,47 @@ const styles = StyleSheet.create({
     flex: 1,
     // padding: 20,
   },
-  // header: {
-  //   flexDirection: 'row',
-  //   justifyContent: 'space-between',
-  //   alignItems: 'center',
-  // },
 
   header: {
     backgroundColor: '#ffff',
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
     paddingHorizontal: 20,
-    paddingVertical: 35,
+    paddingVertical: 40,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 5,
     },
-    shadowOpacity: 1, // Increase shadow opacity to make it darker
-    shadowRadius: 20, // Increase shadow radius for a more spread out shadow
+    shadowOpacity: 1,
+    shadowRadius: 20,
     elevation: 30,
-    marginBottom: 30,
+    marginBottom: 20,
+    flexDirection: 'row',
   },
-
   headerText: {
     fontSize: 20,
     color: '#47C1FF',
     textAlign: 'center',
-    fontFamily: 'Poppins-SemiBold',
+    fontFamily: 'Poppins-Bold',
+    flex: 1,
+  },
+
+  bactbtn: {
+    marginLeft: 10,
+    height: 25,
+    width: 25,
   },
 
   userInfoContainer: {
     paddingTop: 20,
     paddingHorizontal: 80,
-    paddingVertical: 35,
+    paddingVertical: 25,
     borderColor: 'white',
     borderRadius: 10,
     borderWidth: 1,
     backgroundColor: '#ffff',
-    marginBottom: 20,
+    marginBottom: 10,
 
   },
 
@@ -238,14 +244,14 @@ const styles = StyleSheet.create({
   },
 
   userInfo: {
-    fontSize: 14,
+    fontSize: 12,
     color: '#7E7E7E',
     fontFamily: 'Poppins-SemiBold',
   },
   userInfoname: {
-    fontSize: 18,
+    fontSize: 14,
     color: '#212529',
-    fontFamily: 'Poppins-SemiBold',
+    fontFamily: 'Poppins-Bold',
 
   },
   buttonsContainer: {
@@ -261,9 +267,9 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   buttonText: {
-    fontSize: 20,
-    color: '#7E7E7E',
-    fontFamily: 'Poppins-SemiBold',
+    fontSize: 14,
+    color: '#212529',
+    fontFamily: 'Poppins-Bold',
   },
   delbutton: {
     paddingVertical: 10,
@@ -277,9 +283,9 @@ const styles = StyleSheet.create({
   },
 
   delbuttonText: {
-    fontSize: 20,
+    fontSize: 14,
     color: 'white',
-    fontFamily: 'Poppins-SemiBold',
+    fontFamily: 'Poppins-Bold',
     textAlign: 'center',
 
   },
@@ -291,9 +297,9 @@ const styles = StyleSheet.create({
 
   },
   updatebuttonText: {
-    fontSize: 20,
+    fontSize: 14,
     color: '#47C1FF',
-    fontFamily: 'Poppins-SemiBold',
+    fontFamily: 'Poppins-Bold',
 
   },
 

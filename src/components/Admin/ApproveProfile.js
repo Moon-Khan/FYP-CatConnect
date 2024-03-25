@@ -171,7 +171,7 @@ const ApproveProfile = () => {
         console.log('doctorProfile name: ', doctorProfile._data.name);
 
         return (
-            <TouchableOpacity style={styles.card} onPress={() => onDetails(doctorProfile.id)}>
+            <View style={styles.card} >
                 <View style={styles.userIconContainer}>
                     <Image
                         style={styles.thumbnailImage}
@@ -195,17 +195,19 @@ const ApproveProfile = () => {
                     </TouchableOpacity>
 
                 </View>
-            </TouchableOpacity>
+            </View>
         );
     };
 
-    const handleDetails = (profileId) => {
-        navigation.navigate('showDetailsScreen');
+    const handleDetails = (catProfileId) => {
+        console.log('catProfileiid in approve screen-------->', catProfileId)
+        navigation.navigate('showCatDetailScreen', { catProfileId: catProfileId });
     };
 
     const handleApproveCatProfile = async (catProfileId) => {
         try {
             await updateApproveCatProfile(catProfileId, 'approved');
+            navigation.goBack();
             // Update UI accordingly
         } catch (error) {
             console.error('Error approving cat profile:', error);
@@ -215,6 +217,8 @@ const ApproveProfile = () => {
     const handleRejectCatProfile = async (catProfileId) => {
         try {
             await updateApproveCatProfile(catProfileId, 'rejected');
+            navigation.goBack();
+
             // Update UI accordingly
         } catch (error) {
             console.error('Error rejecting cat profile:', error);
