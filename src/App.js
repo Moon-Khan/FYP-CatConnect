@@ -39,15 +39,18 @@ import UserCatDetails from './components/Admin/UserCatDetail';
 import ApproveProfile from './components/Admin/ApproveProfile';
 import CatProfileRecommendationScreen from './components/Recommendation/CatProfileRecommendationScreen';
 import VideoCallScreen from './components/Chat/VideoCallScreen';
-
+import AdminProfile from './components/Admin/AdminProfileScreen'
+import SearchFeed from './components/Users/searchfeed';
+import SearchFilter from './components/Users/searchfilter';
+import AllAnnouncements from './components/Admin/allAnnouncmenet_1'
+import SelectRecepientsforAnnouncmenets from './components/Admin/RecepientsforAnnouncmenets_2'
+import AnnouncementScreen from './components/Admin/sendAnnouncement_3';
+import showCatDetailScreen from './components/Admin/AdminCatDetailScreen'
 import DoctorChatUsers from './components/Doctors/DoctorChatUsers';
 import DoctorChat from './components/Chat/DoctorChat';
-
-
-
-
-
-import AdminProfile from './components/Admin/AdminProfileScreen'
+import feedbackscreen from './components/Feedback/feedback';
+import DoctorProfileScreen from './components/Doctors/DoctorProfileScreen';
+import viewfeedbackAdmin from './components/Admin/viewfeedback'
 
 
 const Stack = createStackNavigator();
@@ -55,9 +58,7 @@ const Stack = createStackNavigator();
 const App = () => (
   <Provider store={store}>
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Splashscreen">
-
-
+      <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="AdminHome">
 
         <Stack.Screen name="Splashscreen" component={Splashscreen} />
         <Stack.Screen name="Signup" component={SignupScreen} />
@@ -68,8 +69,6 @@ const App = () => (
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="DoctorHomeScreen" component={DoctorHomeScreen} />
         <Stack.Screen name="SelectDoctor" component={SelectDoctor} />
-       
-        
         <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
         <Stack.Screen name="CatScreen" component={CatScreen} />
         <Stack.Screen name="chatScreen" component={chatScreen} />
@@ -95,13 +94,19 @@ const App = () => (
         <Stack.Screen name="ApproveProfile" component={ApproveProfile} />
         <Stack.Screen name="CatProfileRecommendationScreen" component={CatProfileRecommendationScreen} />
         <Stack.Screen name="VideoCallScreen" component={VideoCallScreen} />
-
+        <Stack.Screen name="AdminProfile" component={AdminProfile} />
+        <Stack.Screen name="SearchFeed" component={SearchFeed} />
+        <Stack.Screen name="SearchFilter" component={SearchFilter} />
+        <Stack.Screen name="SelectRecepientsforAnnouncmenets" component={SelectRecepientsforAnnouncmenets} />
+        <Stack.Screen name="AllAnnouncements" component={AllAnnouncements} />
+        <Stack.Screen name="AnnouncementScreen" component={AnnouncementScreen} />
+        <Stack.Screen name="showCatDetailScreen" component={showCatDetailScreen} />
         <Stack.Screen name="DoctorChatUsers" component={DoctorChatUsers} />
         <Stack.Screen name="DoctorChat" component={DoctorChat} />
-        
-        
-
-        <Stack.Screen name="AdminProfile" component={AdminProfile} />
+        {/* <Stack.Screen name="DoctorUpdateScreen" component={DoctorUpdateScreen} /> */}
+        <Stack.Screen name="DoctorProfileScreen" component={DoctorProfileScreen} />
+        <Stack.Screen name="feedbackscreen" component={feedbackscreen} />
+        <Stack.Screen name="viewfeedbackAdmin" component={viewfeedbackAdmin} />
 
 
       </Stack.Navigator>

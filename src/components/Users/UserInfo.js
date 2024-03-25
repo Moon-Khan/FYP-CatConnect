@@ -76,6 +76,10 @@ const UpdateUserScreen = () => {
     return (
         <View style={styles.container}>
             <View style={styles.header}>
+
+                <TouchableOpacity style={styles.backButtonContainer} onPress={() => navigation.goBack()}>
+                    <Image source={require("../../../assets/Catassets/backbtn.png")} style={styles.bactbtn} />
+                </TouchableOpacity>
                 <Text style={styles.headerText}>Edit Profile</Text>
             </View>
             <TextInput
@@ -127,10 +131,10 @@ const styles = StyleSheet.create({
     },
     header: {
         backgroundColor: '#ffff',
-        borderBottomLeftRadius: 20,
-        borderBottomRightRadius: 20,
+        borderBottomLeftRadius: 30,
+        borderBottomRightRadius: 30,
         paddingHorizontal: 20,
-        paddingVertical: 35,
+        paddingVertical: 40,
         shadowColor: '#000',
         shadowOffset: {
             width: 0,
@@ -139,13 +143,21 @@ const styles = StyleSheet.create({
         shadowOpacity: 1,
         shadowRadius: 20,
         elevation: 30,
-        marginBottom: 40,
+        marginBottom: 20,
+        flexDirection: 'row',
     },
     headerText: {
         fontSize: 20,
         color: '#47C1FF',
         textAlign: 'center',
-        fontFamily: 'Poppins-SemiBold',
+        fontFamily: 'Poppins-Bold',
+        flex: 1,
+    },
+
+    bactbtn: {
+        marginLeft: 10,
+        height: 25,
+        width: 25,
     },
     input: {
         marginBottom: 16,

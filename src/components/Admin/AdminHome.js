@@ -73,7 +73,7 @@ const AdminHome = () => {
 
             <Text style={styles.buttonText}>Announcements</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.supportbutton} onPress={() => navigation.navigate('SupportFeedback')}>
+          <TouchableOpacity style={styles.supportbutton} onPress={() => navigation.navigate('viewfeedbackAdmin')}>
             <Image source={require('../../../assets/Catassets/supportfeedback.png')} style={styles.support} />
 
             <Text style={styles.buttonText}>Support and Feedback</Text>
@@ -92,7 +92,6 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingLeft: 15,
     paddingRight:15,
-    backgroundColor: '#ffff',
   },
   greeting: {
     paddingTop: 35,
@@ -106,6 +105,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins-Bold',
     color: '#212529',
     flex: 1,
+    marginBottom:30,
   },
   menuContainer: {
     flexDirection: 'row',

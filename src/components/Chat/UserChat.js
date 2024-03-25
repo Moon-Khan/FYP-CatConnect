@@ -385,6 +385,9 @@ import { useNavigation } from '@react-navigation/native';
 const UserChat = ({ route }) => {
     const navigation = useNavigation();
     const { catProfileId, userId } = route.params;
+
+    console.log('userId<-------------------->', userId)
+
     const currentUser = auth().currentUser;
     const [messages, setMessages] = useState([]);
     const [recipientName, setRecipientName] = useState('');
@@ -392,27 +395,19 @@ const UserChat = ({ route }) => {
     useEffect(() => {
         const conversationId = generateConversationId(currentUser.uid, catProfileId || userId);
 
-        if (catProfileId) {
-            firestore()
-                .collection('catProfiles')
-                .doc(catProfileId)
-                .get()
-                .then(documentSnapshot => {
-                    if (documentSnapshot.exists) {
-                        setRecipientName(documentSnapshot.data().basicInfo.catName);
-                    }
-                });
-        } else {
+        if (userId) {
             firestore()
                 .collection('users')
                 .doc(userId)
                 .get()
                 .then(documentSnapshot => {
                     if (documentSnapshot.exists) {
-                        setRecipientName(documentSnapshot.data().displayName);
+                        setRecipientName(documentSnapshot.data().firstname);
                     }
                 });
         }
+
+        console.log('recipientName in chat--->', recipientName)
 
         const unsubscribeListener = firestore()
             .collection('conversations')
@@ -474,10 +469,15 @@ const UserChat = ({ route }) => {
                     />
                 </TouchableOpacity>
                 <Text style={styles.chatHeaderText}>{recipientName}</Text>
+                <TouchableOpacity onPress={handleVideoCall} style={styles.videoCallButton}>
+                    {/* <Text style={styles.videoCallButtonText}>Start Video Call</Text> */}
+                    <Image
+                        source={require('../../../assets/Catassets/Videocamera.png')}
+                        style={styles.videocamera}
+                    />
+                </TouchableOpacity>
             </View>
-            <TouchableOpacity onPress={handleVideoCall} style={styles.videoCallButton}>
-                <Text style={styles.videoCallButtonText}>Start Video Call</Text>
-            </TouchableOpacity>
+
             <GiftedChat
                 messages={messages}
                 onSend={messages => onSend(messages)}
@@ -493,6 +493,7 @@ const UserChat = ({ route }) => {
                     padding: 10,
                     borderRadius: 10,
                     backgroundColor: '#ffffff',
+
                 }}
                 inverted={true} // Added the inverted prop
             />
@@ -504,6 +505,7 @@ const renderMessage = (props, currentUserId) => {
     const { currentMessage } = props;
 
     let messageStyle = {
+        // backgroundColor: currentMessage.user._id === currentUserId ? '#DCF8C6' : '#FFFFFF',
         backgroundColor: currentMessage.user._id === currentUserId ? '#DCF8C6' : '#FFFFFF',
         alignSelf: currentMessage.user._id === currentUserId ? 'flex-end' : 'flex-start',
         padding: 10,
@@ -528,7 +530,9 @@ const renderMessage = (props, currentUserId) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#e0dcd8',
+        // backgroundColor: '#e0dcd8',
+        backgroundColor: '#e0dcd8'
+
     },
     backButton: {
         marginRight: 10,
@@ -540,28 +544,26 @@ const styles = StyleSheet.create({
     chatHeader: {
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: '#47c1ff',
+        // backgroundColor: '#47c1ff',
+        backgroundColor: '#FBFBFB',
+        marginTop: 10,
         paddingVertical: 10,
         paddingHorizontal: 20,
     },
     chatHeaderText: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: '#ffffff',
-        marginLeft: 10,
+        fontSize: 20,
+        fontFamily: 'Poppins-Medium',
+        color: '#212529',
+        marginLeft: 50,
     },
-    videoCallButton: {
-        backgroundColor: '#47c1ff',
-        padding: 10,
-        borderRadius: 10,
-        marginVertical: 10,
-        marginHorizontal: 20,
-        alignItems: 'center',
+
+    videocamera: {
+        width: 34,
+        height: 24,
+        marginLeft: 90,
+
     },
-    videoCallButtonText: {
-        color: '#FFFFFF',
-        fontSize: 16,
-    },
+
 });
 
 export default UserChat;

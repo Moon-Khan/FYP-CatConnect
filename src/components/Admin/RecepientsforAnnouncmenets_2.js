@@ -1,8 +1,9 @@
 // SelectRecepientsforAnnouncmenets.js
 
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, TextInput, Image } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, TextInput, Image, ScrollView } from 'react-native';
 import { fetchAllUserDataFromFirestore, fetchAllDoctorDataFromFirestore } from '../../Services/firebase';
+// import { ScrollView } from 'react-native-gesture-handler';
 
 const SelectRecepientsforAnnouncmenets = ({ navigation }) => {
     const [users, setUsers] = useState([]);
@@ -11,11 +12,38 @@ const SelectRecepientsforAnnouncmenets = ({ navigation }) => {
     const [selectedDoctors, setSelectedDoctors] = useState([]);
     const [filterType, setFilterType] = useState('all');
     const [searchQuery, setSearchQuery] = useState('');
+    const [selectAllRecipients, setSelectAllRecipients] = useState(false);
+    const [selectAllUsers, setSelectAllUsers] = useState(false);
+    const [selectAllDoctors, setSelectAllDoctors] = useState(false);
+
 
     useEffect(() => {
         fetchUsers();
         fetchDoctors();
     }, []);
+
+    const toggleSelectAllRecipients = () => {
+
+
+        setSelectAllRecipients(!selectAllRecipients);
+        if (!selectAllRecipients) {
+            setSelectedUsers(users.map(user => user.id));
+            setSelectedDoctors(doctors.map(doctor => doctor.id));
+        } else {
+            setSelectedUsers([]);
+            setSelectedDoctors([]);
+        }
+    };
+
+    const toggleSelectAllUsers = () => {
+        setSelectAllUsers(!selectAllUsers);
+        setSelectedUsers(selectAllUsers ? [] : users.map(user => user.id));
+    };
+
+    const toggleSelectAllDoctors = () => {
+        setSelectAllDoctors(!selectAllDoctors);
+        setSelectedDoctors(selectAllDoctors ? [] : doctors.map(doctor => doctor.id));
+    };
 
     const fetchUsers = async () => {
         try {
@@ -101,22 +129,38 @@ const SelectRecepientsforAnnouncmenets = ({ navigation }) => {
     };
 
     return (
-        <View style={styles.container}>
+        <ScrollView style={styles.container}>
             <View style={styles.header}>
                 <Text style={styles.headerText}>Select Recipients</Text>
             </View>
 
             <View style={styles.filterContainer}>
                 <TouchableOpacity onPress={() => setFilterType('all')} style={[styles.filterButton, filterType === 'all' && styles.selectedButton]}>
+
                     <Text style={[styles.buttonText, filterType === 'all' && styles.selectedButtonText]}>All</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => setFilterType('users')} style={[styles.filterButton, filterType === 'users' && styles.selectedButton]}>
+
                     <Text style={[styles.buttonText, filterType === 'users' && styles.selectedButtonText]}>Users</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => setFilterType('doctors')} style={[styles.filterButton, filterType === 'doctors' && styles.selectedButton]}>
+
+
                     <Text style={[styles.buttonText, filterType === 'doctors' && styles.selectedButtonText]}>Doctors</Text>
                 </TouchableOpacity>
             </View>
+
+            {/* <View style={styles.filterContainer}>
+                <TouchableOpacity onPress={() => toggleSelectAllRecipients()} style={[styles.filterButton, selectAllRecipients && styles.selectedButton]}>
+                    <Text style={[styles.buttonText, selectAllRecipients && styles.selectedButtonText]}>All</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => toggleSelectAllUsers()} style={[styles.filterButton, selectAllUsers && styles.selectedButton]}>
+                    <Text style={[styles.buttonText, selectAllUsers && styles.selectedButtonText]}>Users</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => toggleSelectAllDoctors()} style={[styles.filterButton, selectAllDoctors && styles.selectedButton]}>
+                    <Text style={[styles.buttonText, selectAllDoctors && styles.selectedButtonText]}>Doctors</Text>
+                </TouchableOpacity>
+            </View> */}
 
             <View style={styles.searchInputContainer}>
                 <Image
@@ -135,7 +179,11 @@ const SelectRecepientsforAnnouncmenets = ({ navigation }) => {
             <View style={styles.checkboxContainer}>
                 {filterType === 'all' && (
                     <>
-                        <Text style={styles.userlabel}>All:</Text>
+                        {/* <Text style={styles.userlabel}>All:</Text> */}
+                        <TouchableOpacity onPress={() => toggleSelectAllRecipients()}>
+                            <Text style={styles.selectAllLabel}>Select All:</Text>
+
+                        </TouchableOpacity>
                         {renderUserCards()}
                         {renderDoctorCards()}
 
@@ -144,8 +192,10 @@ const SelectRecepientsforAnnouncmenets = ({ navigation }) => {
 
                 {filterType === 'users' && (
                     <>
-                        <Text style={styles.userlabel}>Users:</Text>
+                        <TouchableOpacity onPress={() => toggleSelectAllUsers()}>
+                            <Text style={styles.selectAllLabel}>Select All:</Text>
 
+                        </TouchableOpacity>
                         {renderUserCards()}
 
                     </>
@@ -153,7 +203,10 @@ const SelectRecepientsforAnnouncmenets = ({ navigation }) => {
 
                 {filterType === 'doctors' && (
                     <>
-                        <Text style={styles.userlabel}>Doctors:</Text>
+                        <TouchableOpacity onPress={() => toggleSelectAllDoctors()}>
+                            <Text style={styles.selectAllLabel}>Select All:</Text>
+
+                        </TouchableOpacity>
                         {renderDoctorCards()}
                     </>
                 )}
@@ -162,7 +215,7 @@ const SelectRecepientsforAnnouncmenets = ({ navigation }) => {
             <TouchableOpacity onPress={handleCreateAnnouncement} style={styles.button}>
                 <Text style={styles.announcmentbuttonText}> Write Announcement</Text>
             </TouchableOpacity>
-        </View>
+        </ScrollView>
     );
 };
 
@@ -198,8 +251,8 @@ const styles = StyleSheet.create({
         height: 25,
     },
     searchInputContainer: {
-        marginLeft:15,
-        marginRight:30,
+        marginLeft: 15,
+        marginRight: 30,
         marginTop: 10,
         flexDirection: 'row',
         alignItems: 'center',
@@ -230,9 +283,9 @@ const styles = StyleSheet.create({
         marginBottom: 12,
         height: 50,
     },
-    checkboxContainer:{
-        paddingLeft:10,
-        paddingRight:10,
+    checkboxContainer: {
+        paddingLeft: 10,
+        paddingRight: 10,
     },
 
     checkbox: {
@@ -250,9 +303,17 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontFamily: 'Poppins-Semibold',
         marginTop: 10,
-        marginLeft:10,
-        marginBottom:5,
+        marginLeft: 10,
+        marginBottom: 5,
     },
+    selectAllLabel: {
+        marginTop: 10,
+        marginBottom: 5,
+        fontSize: 16,
+        fontFamily: 'Poppins-Semibold',
+        marginLeft: 300,
+    },
+
 
     label: {
         fontSize: 16,
@@ -291,6 +352,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: '#47C1FF',
     },
+
 
     selectedButton: {
         backgroundColor: '#47C1FF',

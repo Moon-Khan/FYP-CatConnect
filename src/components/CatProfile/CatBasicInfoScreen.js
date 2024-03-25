@@ -1,5 +1,5 @@
 // ./src/CatProfile/CatBasicInfoScreen.js
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, RadioButton } from 'react-native-paper';
@@ -7,57 +7,40 @@ import { addDataAsync } from '../../Redux/Slices/CatProfile/catBasicInfoSlice';
 import { useNavigation } from '@react-navigation/native';
 
 const CatBasicInfoScreen = () => {
-  const catName = useSelector((state) => state.BasicInfo.catName);
-  const breed = useSelector((state) => state.BasicInfo.breed);
-  const pedigree = useSelector((state) => state.BasicInfo.pedigree);
-  const gender = useSelector((state) => state.BasicInfo.gender);
-  const age = useSelector((state) => state.BasicInfo.age);
+  const [catName, setCatName] = useState('');
+  const [breed, setBreed] = useState('');
+  const [pedigree, setPedigree] = useState('');
+  const [gender, setGender] = useState('');
+  const [age, setAge] = useState('');
   const navigation = useNavigation();
 
   //redux code
   const dispatch = useDispatch();
 
+  const catNameRegex = /^[a-zA-Z\s-]*$/;
+  const breedRegex = /^[a-zA-Z\s-]*$/;
+  const pedigreeRegex = /^[a-zA-Z\s-()]*$/;
+  const ageRegex = /^\d+$/;
+  const genderRegex = /^[a-zA-Z\s-]*$/;
+
   const handleCatNameChange = (text) => {
-    // Regex pattern to allow only letters, spaces, and hyphens
-    const regex = /^[a-zA-Z\s-]*$/;
-    if (regex.test(text)) {
-      dispatch(addDataAsync({ catName: text }));
-    } else {
-      Alert.alert('Cat name can only contain letters, spaces, and hyphens.');
-    }
+    setCatName(text);
   };
 
   const handleBreedChange = (text) => {
-    // Regex pattern to allow only letters, spaces, and hyphens
-    const regex = /^[a-zA-Z\s-]*$/;
-    if (regex.test(text)) {
-      dispatch(addDataAsync({ breed: text }));
-    } else {
-      Alert.alert('Breed can only contain letters, spaces, and hyphens.');
-    }
+    setBreed(text);
   };
 
   const handlePedigreeChange = (text) => {
-    // Regex pattern to allow letters, spaces, hyphens, and parentheses
-    const regex = /^[a-zA-Z\s-()]*$/;
-    if (regex.test(text)) {
-      dispatch(addDataAsync({ pedigree: text }));
-    } else {
-      Alert.alert('Pedigree can only contain letters, spaces, hyphens, and parentheses.');
-    }
+    setPedigree(text);
   };
 
   const handleGenderChange = (text) => {
-    dispatch(addDataAsync({ gender: text }));
+    setGender(text);
   };
+
   const handleAgeChange = (text) => {
-    // Regex pattern to allow only positive integers
-    const regex = /^\d+$/;
-    if (regex.test(text)) {
-      dispatch(addDataAsync({ age: text }));
-    } else {
-      Alert.alert('Age can only be numbers. ');
-    }
+    setAge(text);
   };
 
   const handleSkipPage = () => {
@@ -65,37 +48,38 @@ const CatBasicInfoScreen = () => {
   }
 
   const handleNextPage = () => {
-    // Validate that all fields are filled
     if (!catName || !breed || !gender || !age || !pedigree) {
-      // console.error('Please fill in all fields before proceeding.');
       Alert.alert('Please Fill all Fields');
       return;
     }
 
-    // Validate that catName and breed are strings and age is an integer
-    if (typeof catName !== 'string' || typeof breed !== 'string' || typeof pedigree !== 'string' || isNaN(parseInt(age))) {
-      // console.error('Invalid data types. Ensure catName and breed are strings, and age is a valid integer.');
-      Alert.alert('Invalid data types. Ensure catName and breed are strings, and age is a valid integer.');
-
+    if (!catNameRegex.test(catName)) {
+      Alert.alert('Cat name can only contain letters, spaces, and hyphens.');
       return;
     }
 
-    // Ensure that basicInfo and catName are defined
-    if (catName !== undefined) {
-      dispatch(addDataAsync({
-
-        catName,
-        breed,
-        pedigree,
-        gender,
-        age,
-
-      }
-      ));
-      navigation.navigate('PhysicalAndHealthInfo');
-    } else {
-      console.error('Invalid catProfileData. Ensure basicInfo and catName are defined.');
+    if (!breedRegex.test(breed)) {
+      Alert.alert('Breed can only contain letters, spaces, and hyphens.');
+      return;
     }
+
+    if (!ageRegex.test(age)) {
+      Alert.alert('Age can only be numbers.');
+      return;
+    }
+
+    if (!pedigreeRegex.test(pedigree)) {
+      Alert.alert('Pedigree can only contain letters, spaces, hyphens, and parentheses.');
+      return;
+    }
+
+    if (!genderRegex.test(gender)) {
+      Alert.alert('Invalid gender format.');
+      return;
+    }
+
+    dispatch(addDataAsync({ catName, breed, pedigree, gender, age }));
+    navigation.navigate('PhysicalAndHealthInfo');
   };
 
   return (
@@ -186,6 +170,7 @@ const CatBasicInfoScreen = () => {
   );
 };
 
+
 const styles = StyleSheet.create({
   container: {
     padding: 20,
@@ -195,7 +180,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   title: {
-    fontSize: 24,
+    fontSize: 16,
     marginTop: 100,
     marginBottom: 30,
     textAlign: 'left',
@@ -205,7 +190,7 @@ const styles = StyleSheet.create({
   title2: {
     fontFamily: 'Poppins-SemiBold',
     color: '#212529',
-    fontSize: 16,
+    fontSize: 20,
     paddingTop: 5,
     alignItems: 'center',
     position: 'absolute',
