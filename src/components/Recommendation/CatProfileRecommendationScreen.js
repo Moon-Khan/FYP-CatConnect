@@ -1561,10 +1561,10 @@ const CatProfileRecommendationScreen = () => {
 
                         setRecommendedCats(recommendedCatsData);
                     } else {
-                        Alert.alert('No Cat Profiles', 'Please create cat profiles.');
+                        // Alert.alert('No Cat Profiles', 'Please create cat profiles.');
                     }
                 } else {
-                    Alert.alert('No Cat Profiles', 'Please create cat profiles.');
+                    // Alert.alert('No Cat Profiles', 'Please create cat profiles.');
                 }
             } else {
                 Alert.alert('No User', 'Please sign in.');
@@ -1720,7 +1720,7 @@ const CatProfileRecommendationScreen = () => {
                     <Text style={styles.breedName}>{basicInfo.breed}</Text>
                     <Text style={styles.available}>{personalityAndAvailability.availabilityStatus}</Text>
                     <Text style={styles.catName}>{basicInfo.catName}</Text>
-                    <Text style={styles.similarity}>Similarity: {similarityPercentage}%</Text>
+                    <Text style={styles.similarity}>Matching: {similarityPercentage}%</Text>
                     {/* <Image
                         style={styles.shareIcon}
                         resizeMode="cover"
@@ -1861,7 +1861,7 @@ const styles = StyleSheet.create({
     similarity: {
         fontSize: 12,
         color: '#555',
-        fontFamily: 'Poppins-Regular',
+        fontFamily: 'Poppins-SemiBold',
     },
 });
 

@@ -87,13 +87,13 @@ const DoctorBasicInfoScreen = () => { // Receive navigation prop
             />
             <TextInput
                 style={styles.input}
-                placeholder="Specialization e.g Cardiologist"
+                placeholder="Specialization e.g Feline Oncology"
                 value={specialization}
                 onChangeText={setSpecialization}
             />
             <TextInput
                 style={styles.input}
-                placeholder="Qualification e.g MBBS"
+                placeholder="Qualification e.g DVM"
                 value={qualification}
                 onChangeText={setQualification}
             />

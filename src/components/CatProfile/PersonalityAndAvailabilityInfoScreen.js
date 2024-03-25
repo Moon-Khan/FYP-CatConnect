@@ -21,60 +21,48 @@ import { addPersonalityAndAvailability } from '../../Redux/Slices/CatProfile/Per
 
 const PersonalityAvialabilityScreen = () => {
 
-    const temperament = useSelector((state) => state.personalityAndAvailability.temperament);
-    const socialCompatibility = useSelector((state) => state.personalityAndAvailability.socialCompatibility);
-    const description = useSelector((state) => state.personalityAndAvailability.description);
-    const availabilityStatus = useSelector((state) => state.personalityAndAvailability.availabilityStatus);
+    const [temperament, setTemperament] = useState('');
+    const [socialCompatibility, setSocialCompatibility] = useState('');
+    const [description, setDescription] = useState('');
+    const [availabilityStatus, setAvailabilityStatus] = useState('');
     const navigation = useNavigation();
-
 
     //redux code
     const dispatch = useDispatch();
+
+    const temperamentRegex = /^[a-zA-Z-]+$/;
+    const socialCompatibilityRegex = /^[a-zA-Z\s-]+$/;
+
     const handleTemparamentChange = (text) => {
-        // Regex pattern to allow only letters and hyphens
-        const regex = /^[a-zA-Z-]+$/;
-        if (regex.test(text)) {
-            dispatch(addPersonalityAndAvailability({ temperament: text }));
-        } else {
-            Alert.alert('Invalid input for temperament. Please use only letters and hyphens.');
-        }
+        setTemperament(text);
     };
 
     const handleSocialCompatibilityChange = (text) => {
-        // Regex pattern to allow only letters, spaces, and hyphens
-        const regex = /^[a-zA-Z\s-]+$/;
-        if (regex.test(text)) {
-            dispatch(addPersonalityAndAvailability({ socialCompatibility: text }));
-        } else {
-            Alert.alert('Invalid input for social compatibility. Please use only letters, spaces, and hyphens.');
-        }
+        setSocialCompatibility(text);
     };
 
     const handleDescriptionChange = (text) => {
-        dispatch(addPersonalityAndAvailability({ description: text }));
+        setDescription(text);
     };
 
     const handleAvailabilityStatusChange = (text) => {
-        if (text === 'Available' || text === 'NotAvailable') {
-            dispatch(addPersonalityAndAvailability({ availabilityStatus: text }));
-        } else {
-            Alert.alert('Invalid availability status.');
-        }
+        setAvailabilityStatus(text);
     };
 
     const handleNextPage = () => {
         try {
-
             if (!temperament || !socialCompatibility || !description || !availabilityStatus) {
-                // console.error('Please fill in all fields before proceeding.');
                 Alert.alert('Please Fill all Fields');
                 return;
             }
 
-            // Validate that catName and breed are strings and age is an integer
-            if (typeof temperament !== 'string' || typeof socialCompatibility !== 'string' || typeof description !== 'string' || typeof availabilityStatus !== 'string') {
-                // console.error('Invalid data types. Ensure catName and breed are strings, and age is a valid integer.');
-                Alert.alert('Invalid data types.Ensure catName and breed are strings, and age is an integer.');
+            if (!temperamentRegex.test(temperament)) {
+                Alert.alert('Invalid input for temperament. Please use only letters and hyphens.');
+                return;
+            }
+
+            if (!socialCompatibilityRegex.test(socialCompatibility)) {
+                Alert.alert('Invalid input for social compatibility. Please use only letters, spaces, and hyphens.');
                 return;
             }
 
@@ -83,16 +71,12 @@ const PersonalityAvialabilityScreen = () => {
                 socialCompatibility,
                 description,
                 availabilityStatus,
-            }
-            ));
-
+            }));
 
             navigation.navigate('CatMediaUpload');
-
         } catch (err) {
             console.log(err);
         }
-
     };
 
     return (
@@ -141,7 +125,6 @@ const PersonalityAvialabilityScreen = () => {
                         status={availabilityStatus === 'Available' ? 'checked' : 'unchecked'}
                         onPress={() => handleAvailabilityStatusChange('Available')}
                         color="#47C1FF" // Set color for checked sta
-
                     />
 
                     <Text style={{ ...styles.radioButtonText, fontFamily: 'Poppins-Regular' }}>Available</Text>
@@ -150,7 +133,6 @@ const PersonalityAvialabilityScreen = () => {
                         status={availabilityStatus === 'NotAvailable' ? 'checked' : 'unchecked'}
                         onPress={() => handleAvailabilityStatusChange('NotAvailable')}
                         color="#47C1FF" // Set color for checked sta
-
                     />
                     <Text style={{ ...styles.radioButtonText, fontFamily: 'Poppins-Regular' }}>Not Available</Text>
                 </View>
@@ -162,7 +144,6 @@ const PersonalityAvialabilityScreen = () => {
             </TouchableOpacity>
         </ScrollView>
     );
-
 };
 
 const styles = StyleSheet.create({

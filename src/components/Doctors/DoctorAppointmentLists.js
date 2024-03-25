@@ -8,6 +8,8 @@ import { updateAppointmentsFromFirestore } from '../../Services/firebase';
 import { fetchUserDataFromFirestore } from '../../Services/firebase';
 import { fetchAppointmentsCondFromFirestore } from '../../Services/firebase';
 import { addNotificationToFirestore } from '../../Services/firebase';
+
+
 const AppointmentCard = ({ appointment, onAccept, onReject }) => {
   const { userName, status, timeSlot, day } = appointment;
   const startTime = new Date(timeSlot.startTime.toDate());
@@ -128,7 +130,6 @@ const DoctorAppointmentsList = ({ route }) => {
     <ScrollView contentContainerStyle={styles.scrollContainer}>
       <View style={styles.container}>
         {appointments.length > 0 ? (
-          // Render appointments if there are any
           appointments.map((appointment) => (
             <AppointmentCard
               key={appointment.id}

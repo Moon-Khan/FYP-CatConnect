@@ -14,77 +14,73 @@
 // ));
 
 // ./src/CatProfile/PhysicalAndHealthInfoScreen.js
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, TextInput, ScrollView, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { Button, RadioButton } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { addPhysicalHealth } from '../../Redux/Slices/CatProfile/PhysicalHealthSlice';
 
-
 const PhysicalAndHealthScreen = () => {
-
-
-    const color = useSelector((state) => state.physicalHealth.color);
-    const pattern = useSelector((state) => state.physicalHealth.pattern);
-    const eyeColor = useSelector((state) => state.physicalHealth.eyeColor);
-    const coatLength = useSelector((state) => state.physicalHealth.coatLength);
-    const vaccinationStatus = useSelector((state) => state.physicalHealth.vaccinationStatus);
-    const medicalCertificate = useSelector((state) => state.physicalHealth.medicalCertificate);
+    const [color, setColor] = useState('');
+    const [pattern, setPattern] = useState('');
+    const [eyeColor, setEyeColor] = useState('');
+    const [coatLength, setCoatLength] = useState('');
+    const [vaccinationStatus, setVaccinationStatus] = useState('');
     const navigation = useNavigation();
 
-
-    //redux code
+    // Redux code
     const dispatch = useDispatch();
 
+    const colorRegex = /^[a-zA-Z\s-]*$/;
+    const patternRegex = /^[a-zA-Z\s-]*$/;
+    const eyeColorRegex = /^[a-zA-Z\s-]*$/;
+    const coatLengthRegex = /^[a-zA-Z\s-]*$/;
+
     const handleColorChange = (text) => {
-        const regex = /^[a-zA-Z\s-]*$/; // Regex pattern to allow only letters, spaces, and hyphens
-        if (regex.test(text)) {
-            dispatch(addPhysicalHealth({ color: text }));
-        } else {
-            Alert.alert('Invalid input for color. Please use only letters, spaces, and hyphens.');
-        }
+        setColor(text);
     };
 
     const handlePatternChange = (text) => {
-        const regex = /^[a-zA-Z\s-]*$/; // Regex pattern to allow only letters, spaces, and hyphens
-        if (regex.test(text)) {
-            dispatch(addPhysicalHealth({ pattern: text }));
-        } else {
-            Alert.alert('Invalid input for pattern. Please use only letters, spaces, and hyphens.');
-        }
+        setPattern(text);
     };
 
     const handleEyeColorChange = (text) => {
-        const regex = /^[a-zA-Z\s-]*$/; // Regex pattern to allow only letters, spaces, and hyphens
-        if (regex.test(text)) {
-            dispatch(addPhysicalHealth({ eyeColor: text }));
-        } else {
-            Alert.alert('Invalid input for eye color. Please use only letters, spaces, and hyphens.');
-        }
+        setEyeColor(text);
     };
 
     const handleCoatLengthChange = (text) => {
-        const regex = /^[a-zA-Z\s-]*$/; // Regex pattern to allow only letters, spaces, and hyphens
-        if (regex.test(text)) {
-            dispatch(addPhysicalHealth({ coatLength: text }));
-        } else {
-            Alert.alert('Invalid input for coat length. Please use only letters, spaces, and hyphens.');
-        }
+        setCoatLength(text);
     };
 
     const handleVaccinationStatusChange = (text) => {
-        console.log('Selected value:', text);
-        dispatch(addPhysicalHealth({ vaccinationStatus: text }));
+        setVaccinationStatus(text);
     };
-
 
     const handleNextPage = () => {
         try {
-
             if (!color || !pattern || !eyeColor || !coatLength || !vaccinationStatus) {
-                // console.error('Please fill in all fields before proceeding.');
                 Alert.alert('Please Fill all Fields');
+                return;
+            }
+
+            if (!colorRegex.test(color)) {
+                Alert.alert('Invalid input for cat color. Please use only letters, spaces, and hyphens.');
+                return;
+            }
+
+            if (!patternRegex.test(pattern)) {
+                Alert.alert('Invalid input for pattern. Please use only letters, spaces, and hyphens.');
+                return;
+            }
+
+            if (!eyeColorRegex.test(eyeColor)) {
+                Alert.alert('Invalid input for eye color. Please use only letters, spaces, and hyphens.');
+                return;
+            }
+
+            if (!coatLengthRegex.test(coatLength)) {
+                Alert.alert('Invalid input for coat length. Please use only letters, spaces, and hyphens.');
                 return;
             }
 
@@ -94,16 +90,14 @@ const PhysicalAndHealthScreen = () => {
                 eyeColor,
                 coatLength,
                 vaccinationStatus,
-                medicalCertificate,
-            }
-            ));
+            }));
 
             navigation.navigate('PersonalityAndAvailabilityInfo');
-
-
-        } catch (err) { console.log(err); }
-
+        } catch (err) {
+            console.log(err);
+        }
     };
+
     return (
         <ScrollView style={{ ...styles.container, backgroundColor: 'white' }}>
             <Text style={styles.title}>Physical Information</Text>
@@ -159,7 +153,6 @@ const PhysicalAndHealthScreen = () => {
                         status={vaccinationStatus === 'Vaccinated' ? 'checked' : 'unchecked'}
                         onPress={() => handleVaccinationStatusChange('Vaccinated')}
                         color="#47C1FF" // Set color for checked sta
-
                     />
 
                     <Text style={{ ...styles.radioButtonText, fontFamily: 'Poppins-Regular' }}>Vaccinated</Text>
@@ -168,22 +161,18 @@ const PhysicalAndHealthScreen = () => {
                         status={vaccinationStatus === 'NotVaccinated' ? 'checked' : 'unchecked'}
                         onPress={() => handleVaccinationStatusChange('NotVaccinated')}
                         color="#47C1FF" // Set color for checked sta
-
                     />
                     <Text style={{ ...styles.radioButtonText, fontFamily: 'Poppins-Regular' }}>Not Vaccinated</Text>
                 </View>
             </View>
 
-
-
             <TouchableOpacity style={styles.button} onPress={handleNextPage}>
                 <Text style={styles.buttonText}>Next</Text>
             </TouchableOpacity>
-
-
         </ScrollView>
     );
 };
+
 
 const styles = StyleSheet.create({
     container: {

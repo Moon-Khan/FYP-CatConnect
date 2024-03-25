@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 
-const DoctorChatUsers = () => {
+const DoctorChatUsers = ({ doctorId }) => {
     const navigation = useNavigation();
     const [users, setUsers] = useState([]);
     const [currentUserId, setCurrentUserId] = useState(null); // To store the current user's ID
@@ -19,60 +19,11 @@ const DoctorChatUsers = () => {
 
     useEffect(() => {
         if (currentUserId) {
-            fetchUsers();
+            fetchUsers(doctorId);
         }
-    }, [currentUserId]);
+    }, [currentUserId, doctorId]);
 
-    // const fetchUsers = async () => {
-    //     try {
-    //         const userSnapshot = await firestore().collection('users').get();
-    //         const fetchedUsers = userSnapshot.docs.map(doc => ({
-    //             id: doc.id,
-    //             ...doc.data(),
-    //         }));
-
-    //         // Filter out the current user
-    //         const filteredUsers = fetchedUsers.filter(user => user.id !== currentUserId);
-
-    //         setUsers(filteredUsers);
-    //     } catch (error) {
-    //         console.error('Error fetching users:', error);
-    //     }
-    // };
-
-
-    // const fetchUsers = async () => {
-    //     try {
-    //         // Fetch all users from the "users" collection
-    //         const userSnapshot = await firestore().collection('users').get();
-    //         const allUsers = userSnapshot.docs.map(doc => ({
-    //             id: doc.id,
-    //             ...doc.data()
-    //         }));
-
-    //         console.log('All User IDs:', allUsers.map(user => user.id)); // Log all user IDs
-
-    //         // Fetch conversations where the current user (doctor) is one of the participants
-    //         const conversationSnapshot = await firestore()
-    //             .collection('doctorconversation')
-    //             .doc(currentUserId)
-    //             .collection('messages')
-    //             .get();
-
-    //         const userIds = conversationSnapshot.docs.map(doc => doc.data().senderId);
-
-    //         // Filter users based on whether they have a conversation with the current user (doctor)
-    //         const filteredUsers = allUsers.filter(user => userIds.includes(user.id));
-
-    //         setUsers(filteredUsers);
-    //     } catch (error) {
-    //         console.error('Error fetching users:', error);
-    //     }
-    // };
-
-
-
-    const fetchUsers = async () => {
+    const fetchUsers = async (doctorId) => {
         try {
             // Fetch all users from the "users" collection
             const userSnapshot = await firestore().collection('users').get();
@@ -80,10 +31,10 @@ const DoctorChatUsers = () => {
 
             // Fetch conversations for each user
             const fetchedUsers = await Promise.all(allUserIds.map(async (userId) => {
-                // Fetch conversation data for the current user ID
+                // Fetch conversation data for the current user ID and doctor ID
                 const conversationSnapshot = await firestore()
                     .collection('doctorconversation')
-                    .doc(userId) // Use the user ID as the document ID in the doctorconversation collection
+                    .doc(`${userId}_${userId}`) // Use the combination of user ID and doctor ID as the document ID
                     .collection('messages')
                     .get();
 
@@ -101,19 +52,19 @@ const DoctorChatUsers = () => {
             // Filter out users with null values (no conversations)
             const filteredUsers = fetchedUsers.filter(user => user !== null);
 
+            // Map over filteredUsers array and log the IDs
+            const filteredUserIds = filteredUsers.map(user => user.id);
+            console.log("Filtered User IDs:", filteredUserIds);
+
             setUsers(filteredUsers);
         } catch (error) {
             console.error('Error fetching users:', error);
         }
     };
 
-    
-
-
-
     const handleUserPress = (user) => {
         navigation.navigate('DoctorChat', { userId: user.id });
-        console.log("Doctor ---------->",  user.id );
+        console.log("Doctor ---------->", user.id);
     };
 
     const renderUserItem = ({ item }) => (

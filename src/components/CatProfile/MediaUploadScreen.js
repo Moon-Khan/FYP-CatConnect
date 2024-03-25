@@ -97,10 +97,13 @@ const CatMediaUploadScreen = () => {
     const navigation = useNavigation();
     const [isBtnPressed, setIsBtnPressed] = useState(false);
     // Move useSelector calls outside the component
+
     const basicInfo = useSelector((state) => state.BasicInfo);
     const physicalHealth = useSelector((state) => state.physicalHealth);
     const personalityAndAvailability = useSelector((state) => state.personalityAndAvailability);
     const mediaUpload = useSelector((state) => state.mediaUpload);
+
+    
     const onPressIn = () => {
         setIsBtnPressed(true);
     };

@@ -208,6 +208,7 @@ import { View, StyleSheet, Image, Text, TouchableOpacity, FlatList } from "react
 import { useNavigation } from '@react-navigation/native';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
+import { ScrollView } from 'react-native-gesture-handler';
 
 const ChatUsers = () => {
     const navigation = useNavigation();
@@ -251,23 +252,63 @@ const ChatUsers = () => {
     };
 
     const renderUserItem = ({ item }) => (
-        <TouchableOpacity onPress={() => handleUserPress(item)}>
-            <View style={styles.userItem}>
-                <Image source={require('../../../assets/Catassets/uicon.png')} style={styles.userIcon} />
-                <Text style={styles.username}>{item.firstname}</Text>
+        <TouchableOpacity style={styles.userCard} onPress={() => handleUserPress(item)}>
+            {/* <View style={styles.userItem}>
+                <Image source={require("../../../assets/Catassets/doctoruser2.png")} style={styles.userIcon} />
+            </View> */}
+
+            <View style={styles.userIconContainer}>
+                <Image
+                    style={styles.thumbnailImage}
+                    resizeMode="cover"
+                    source={require("../../../assets/Catassets/doctoruser2.png")}
+                />
+
             </View>
+            <Text style={styles.firstname}>{item.firstname}</Text>
+
         </TouchableOpacity>
     );
 
     return (
         <View style={styles.container}>
-            <FlatList
-                data={users}
-                renderItem={renderUserItem}
-                keyExtractor={(item) => item.id}
-                contentContainerStyle={styles.flatListContent}
-            />
+            <ScrollView>
+                <View style={styles.header}>
+                    <Text style={styles.headerText}>Chats</Text>
+                </View>
+                <FlatList
+                    data={users}
+                    renderItem={renderUserItem}
+                    keyExtractor={(item) => item.id}
+                    contentContainerStyle={styles.flatListContent}
+                />
+            </ScrollView>
+
+
+            <View style={styles.bottomMenu}>
+                <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Home')}>
+                    <Image source={require('../../../assets/Catassets/home-1.png')} style={{ width: 24, height: 24 }} />
+
+                    <Text style={{ ...styles.menuText, color: '#9F9F9F' }}>Home</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('SelectDoctor')}>
+                    <Image source={require('../../../assets/Catassets/maki_doctor.png')} style={{ width: 24, height: 27 }} />
+
+                    <Text style={{ ...styles.menuText, color: '#9F9F9F' }}>Doctor</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('ChatUsers')}>
+                    <Image source={require('../../../assets/Catassets/chatblue.png')} style={{ width: 24, height: 24 }} />
+
+                    <Text style={{ ...styles.menuText, color: '#47C1FF' }}>Chat</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('ProfileScreen')}>
+                    <Image source={require('../../../assets/Catassets/profilehome.png')} style={{ width: 24, height: 27 }} />
+
+                    <Text style={{ ...styles.menuText, color: '#9F9F9F' }}>Profile</Text>
+                </TouchableOpacity>
+            </View>
         </View>
+
     );
 };
 
@@ -275,24 +316,85 @@ const ChatUsers = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 20,
-        backgroundColor: '#F5F5F5'
+        backgroundColor: 'white',
     },
-    flatListContent: {
-        paddingHorizontal: 16,
+
+    header: {
+        backgroundColor: '#ffff',
+        borderBottomLeftRadius: 20,
+        borderBottomRightRadius: 20,
+        paddingHorizontal: 20,
+        paddingVertical: 35,
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 5,
+        },
+        shadowOpacity: 1, // Increase shadow opacity to make it darker
+        shadowRadius: 20, // Increase shadow radius for a more spread out shadow
+        elevation: 30,
+        marginBottom: 30,
     },
-    userItem: {
-        borderColor: '#E0E0E0',
-        backgroundColor: '#EDEFF1',
+
+    headerText: {
+        fontSize: 20,
+        color: '#47C1FF',
+        textAlign: 'center',
+        fontFamily: 'Poppins-Bold',
+    },
+
+    userCard: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        borderColor: '#fff',
+        backgroundColor: '#fff',
         borderWidth: 1,
         borderRadius: 16,
         elevation: 2,
         padding: 16,
         marginBottom: 12,
+        height: 80,
     },
+
+    flatListContent: {
+        paddingHorizontal: 16,
+    },
+    userIconContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginRight: 16,
+        backgroundColor: '#CAEDFF',
+        padding: 10,
+        borderRadius: 100,
+    },
+    thumbnailImage: {
+        width: 20,
+        height: 20,
+        borderRadius: 5,
+    },
+    firstname: {
+        fontSize: 14,
+        fontFamily: 'Poppins-Bold',
+        color: '#212529',
+    },
+
     latestMessage: {
         fontSize: 14,
         color: '#7E7E7E',
+    },
+    bottomMenu: {
+        marginTop: 2,
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        alignItems: 'center',
+        backgroundColor: '#FAFAFA',
+    },
+    menuItem: {
+        alignItems: 'center',
+
+    },
+    menuText: {
+        marginTop: 1,
     },
 });
 

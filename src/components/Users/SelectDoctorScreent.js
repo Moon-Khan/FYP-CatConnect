@@ -428,7 +428,7 @@ const AppointmentHomeScreen = () => {
         };
         console.log('--------------doctorDetailsf from select doctor--->', item),
 
-        navigation.navigate('DoctorDetailScreen', { doctorData: doctorDetails });
+          navigation.navigate('DoctorDetailScreen', { doctorData: doctorDetails });
       }}
     />
   );
@@ -441,7 +441,6 @@ const AppointmentHomeScreen = () => {
   return (
     <View style={styles.container}>
 
-    
       <View style={styles.header1}>
         <Text style={styles.greeting}>Hi {userData.firstname || ''} 👋</Text>
 
@@ -479,7 +478,7 @@ const AppointmentHomeScreen = () => {
 
           <Text style={{ ...styles.menuText, color: '#47C1FF' }}>Doctor</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('chatScreen')}>
+        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('ChatUsers')}>
           <Image source={require('../../../assets/Catassets/chat.png')} style={{ width: 24, height: 24 }} />
 
           <Text style={{ ...styles.menuText, color: '#9F9F9F' }}>Chat</Text>
@@ -522,20 +521,6 @@ const styles = StyleSheet.create({
     color: '#212529',
     flex: 1,
     flexDirection: 'row',
-  },
-  button: {
-    backgroundColor: '#fff',
-    padding: 10,
-    borderRadius: 26,
-    marginTop: 15,
-    width: '70%',
-    alignItems: 'center',
-    alignSelf: 'center',
-  },
-  buttonText: {
-    fontSize: 18,
-    color: '#47C1FF',
-    fontFamily: 'Poppins-SemiBold',
   },
   searchInputContainer: {
     flexDirection: 'row',
@@ -592,23 +577,25 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   doctorName: {
-    fontSize: 20,
-    fontFamily: 'Poppins-SemiBold',
+    marginTop: 5,
+    fontSize: 16,
+    fontFamily: 'Poppins-Bold',
     color: '#212529',
   },
 
   doctorDetail: {
-    fontSize: 16,
+    marginTop: 5,
+    fontSize: 12,
     fontFamily: 'Poppins-SemiBold',
     color: '#7E7E7E',
   },
   doctorAvailable: {
-    fontSize: 14,
+    marginTop: 5,
+    fontSize: 12,
     color: '#47C1FF',
     fontFamily: 'Poppins-SemiBold',
   },
   bottomMenu: {
-    // marginTop: 40,
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
@@ -618,6 +605,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   menuText: {
+    fontFamily: 'Poppins-Medium',
+    fontSize: 12,
     marginTop: 1,
   },
 });
